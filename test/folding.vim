@@ -1,21 +1,22 @@
 silent filetype plugin on
 
-function! AssertFold(firstLine, lastLine, foldLevel)
-  Expect foldclosed(a:firstLine) ==# a:firstLine
-  Expect foldclosedend(a:firstLine) ==# a:lastLine
-  call AssertFoldRange(a:firstLine, a:lastLine, a:foldLevel)
-endfunction
-
-function! AssertFoldRange(firstLine, lastLine, foldLevel)
+function! AssertRangeFoldlevel(firstLine, lastLine, foldLevel)
   for i in range(a:firstLine, a:lastLine)
     Expect foldlevel(i) == a:foldLevel
   endfor
 endfunction
 
-function! UnfoldedRange(firstLine, lastLine)
+function! AssertRangeIsFoldedWithLevel(firstLine, lastLine, foldLevel)
+  Expect foldclosed(a:firstLine) ==# a:firstLine
+  Expect foldclosedend(a:firstLine) ==# a:lastLine
+  call AssertRangeFoldlevel(a:firstLine, a:lastLine, a:foldLevel)
+endfunction
+
+function! AssertRangeIsUnfoldedWithLevel(firstLine, lastLine, foldLevel)
   for i in range(a:firstLine, a:lastLine)
     Expect foldclosed(i) ==# -1
     Expect foldclosedend(i) ==# -1
+    Expect foldlevel(i) == a:foldLevel
   endfor
 endfunction
 
@@ -39,19 +40,19 @@ describe 'Stacked Folding'
   end
 
   it 'opens a new fold for "# Top level heading"'
-    call AssertFold(1, 4, 1)
+    call AssertRangeIsFoldedWithLevel(1, 4, 1)
   end
 
   it 'opens a new fold for "## Second level heading"'
-    call AssertFold(5, 8, 1)
+    call AssertRangeIsFoldedWithLevel(5, 8, 1)
   end
 
   it 'opens a new fold for "### Third level heading"'
-    call AssertFold(9, 12, 1)
+    call AssertRangeIsFoldedWithLevel(9, 12, 1)
   end
 
   it 'opens a new fold for "### Another third level heading"'
-    call AssertFold(13, 15, 1)
+    call AssertRangeIsFoldedWithLevel(13, 15, 1)
   end
 
 end
@@ -71,29 +72,44 @@ describe 'Nested Folding'
 
   it 'foldlevel=0: collapses everything below h1'
     setlocal foldlevel=0
+    call AssertRangeFoldlevel(1, 4, 1)
+    call AssertRangeFoldlevel(5, 8, 2)
+    call AssertRangeFoldlevel(9, 15, 3)
+
     Expect foldclosed(1) ==# 1
     Expect foldclosedend(1) ==# 15
   end
 
   it 'foldlevel=1: unfolds h1 headings'
     setlocal foldlevel=1
-    call UnfoldedRange(1, 4)
-    call AssertFoldRange(1, 4, 1)
+    call AssertRangeFoldlevel(1, 4, 1)
+    call AssertRangeFoldlevel(5, 8, 2)
+    call AssertRangeFoldlevel(9, 15, 3)
+
+    call AssertRangeIsUnfoldedWithLevel(1, 4, 1)
+    Expect foldclosed(5) ==# 5
+    Expect foldclosedend(5) ==# 15
   end
 
   it 'foldlevel=2: unfolds (h1 and) h2 headings'
     setlocal foldlevel=2
-    call UnfoldedRange(1, 8)
-    call AssertFoldRange(1, 4, 1)
-    call AssertFoldRange(5, 8, 2)
+    call AssertRangeFoldlevel(1, 4, 1)
+    call AssertRangeFoldlevel(5, 8, 2)
+    call AssertRangeFoldlevel(9, 15, 3)
+
+    call AssertRangeIsUnfoldedWithLevel(1, 4, 1)
+    call AssertRangeIsUnfoldedWithLevel(5, 8, 2)
   end
 
   it 'foldlevel=3: unfolds (h1, h2, and) h3 headings'
     setlocal foldlevel=3
-    call UnfoldedRange(1, 15)
-    call AssertFoldRange(1, 4, 1)
-    call AssertFoldRange(5, 8, 2)
-    call AssertFoldRange(9, 15, 3)
+    call AssertRangeFoldlevel(1, 4, 1)
+    call AssertRangeFoldlevel(5, 8, 2)
+    call AssertRangeFoldlevel(9, 15, 3)
+
+    call AssertRangeIsUnfoldedWithLevel(1, 4, 1)
+    call AssertRangeIsUnfoldedWithLevel(5, 8, 2)
+    call AssertRangeIsUnfoldedWithLevel(9, 15, 3)
   end
 
 end
