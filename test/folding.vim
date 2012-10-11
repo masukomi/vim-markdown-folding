@@ -3,9 +3,7 @@ silent filetype plugin on
 function! AssertFold(firstLine, lastLine, foldLevel)
   Expect foldclosed(a:firstLine) ==# a:firstLine
   Expect foldclosedend(a:firstLine) ==# a:lastLine
-  for i in range(a:firstLine, a:lastLine)
-    Expect foldlevel(i) == a:foldLevel
-  endfor
+  call AssertFoldRange(a:firstLine, a:lastLine, a:foldLevel)
 endfunction
 
 function! AssertFoldRange(firstLine, lastLine, foldLevel)
@@ -80,11 +78,22 @@ describe 'Nested Folding'
   it 'foldlevel=1: unfolds h1 headings'
     setlocal foldlevel=1
     call UnfoldedRange(1, 4)
+    call AssertFoldRange(1, 4, 1)
   end
 
   it 'foldlevel=2: unfolds (h1 and) h2 headings'
     setlocal foldlevel=2
     call UnfoldedRange(1, 8)
+    call AssertFoldRange(1, 4, 1)
+    call AssertFoldRange(5, 8, 2)
+  end
+
+  it 'foldlevel=3: unfolds (h1, h2, and) h3 headings'
+    setlocal foldlevel=3
+    call UnfoldedRange(1, 15)
+    call AssertFoldRange(1, 4, 1)
+    call AssertFoldRange(5, 8, 2)
+    call AssertFoldRange(9, 15, 3)
   end
 
 end
