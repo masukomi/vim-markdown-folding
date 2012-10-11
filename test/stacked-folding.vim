@@ -26,4 +26,24 @@ describe 'Stacked Folding'
     endfor
   end
 
+  it 'opens a new fold for "# Top level heading"'
+    Expect foldclosed(3) ==# 1
+    Expect foldclosedend(3) ==# 4
+  end
+
+  it 'opens a new fold for "## Second level heading"'
+    Expect foldclosed(7) ==# 5
+    Expect foldclosedend(7) ==# 8
+  end
+
+  it 'opens a new fold for "### Third level heading"'
+    Expect foldclosed(11) ==# 9
+    Expect foldclosedend(11) ==# 12
+  end
+
+  it 'opens a new fold for "### Another third level heading"'
+    Expect foldclosed(13) ==# 13
+    Expect foldclosedend(13) ==# 15
+  end
+
 end
