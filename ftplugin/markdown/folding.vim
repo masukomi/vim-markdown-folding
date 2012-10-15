@@ -1,5 +1,11 @@
 function! StackedMarkdownFolds()
-  if match(getline(v:lnum), "^#") >= 0
+  let thisline    = getline(v:lnum)
+  let nextline    = getline(v:lnum + 1)
+  let leadinghash = "^#"
+  let underline   = '\v^[-=]{3,}$'
+
+  if match(thisline, leadinghash) >= 0
+\ || match(nextline, underline) >= 0
     return ">1"
   else
     return "="

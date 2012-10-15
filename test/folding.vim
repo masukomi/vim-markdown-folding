@@ -110,3 +110,35 @@ describe 'Nested Folding'
   end
 
 end
+
+describe 'Stacked Folding with underlines'
+  before
+    silent tabnew test/underlines.md
+    setlocal filetype=markdown
+    setlocal foldmethod=expr
+    setlocal foldexpr=StackedMarkdownFolds()
+    setlocal foldenable
+  end
+  after
+    silent tabclose
+  end
+  it 'creates a fold for each section'
+    setlocal foldlevel=0
+    call AssertRangeFoldlevel(1, 9, 1)
+    call AssertRangeIsFolded(1, 5)
+    call AssertRangeIsFolded(6, 9)
+  end
+
+  it 'opens specified folds when told to'
+    setlocal foldlevel=0
+    normal! 1Gza
+    call AssertRangeIsStretched(1, 5)
+    call AssertRangeIsFolded(6, 9)
+
+    setlocal foldlevel=0
+    normal! 7Gza
+    call AssertRangeIsFolded(1, 5)
+    call AssertRangeIsStretched(6, 9)
+  end
+
+end
