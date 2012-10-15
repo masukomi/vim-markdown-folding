@@ -178,7 +178,7 @@ end
 describe 'FoldText'
 
   before
-    silent tabnew test/example.md
+    silent tabnew test/headings-2.md
     setlocal filetype=markdown
     setlocal foldmethod=expr
     setlocal foldexpr=StackedMarkdownFolds()
@@ -186,15 +186,18 @@ describe 'FoldText'
     setlocal foldenable
     setlocal foldlevel=0
   end
+
   after
     silent tabclose
   end
 
   it 'uses the current heading'
-    Expect foldtextresult('1')  ==# 'Topmost heading'
-    Expect foldtextresult('5')  ==# 'Second level heading'
-    Expect foldtextresult('9')  ==# 'Third level heading'
-    Expect foldtextresult('13') ==# 'Another third level heading'
+    Expect foldtextresult('1')   ==# '# Level one'
+    Expect foldtextresult('3')   ==# '## Level two'
+    Expect foldtextresult('5')   ==# '### Level three'
+    Expect foldtextresult('7')   ==# '#### Level four'
+    Expect foldtextresult('10')  ==# '# Level one'
+    Expect foldtextresult('13')  ==# '## Level two'
   end
 
 end

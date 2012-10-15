@@ -36,7 +36,9 @@ function! HeadingDepth(lnum)
 endfunction
 
 function! FoldText()
-  let title = getline( v:foldstart )
+  let level = HeadingDepth(v:foldstart)
+  let indent = repeat('#', level)
+  let title = getline(v:foldstart)
   let title = substitute(title, '^#\+\s*', '', '')
-  return title
+  return indent.' '.title
 endfunction
