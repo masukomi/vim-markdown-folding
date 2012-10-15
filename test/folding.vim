@@ -174,3 +174,27 @@ describe 'HeadingDepth'
     Expect HeadingDepth(10) ==# 2
   end
 end
+
+describe 'FoldText'
+
+  before
+    silent tabnew test/example.md
+    setlocal filetype=markdown
+    setlocal foldmethod=expr
+    setlocal foldexpr=StackedMarkdownFolds()
+    setlocal foldtext=FoldText()
+    setlocal foldenable
+    setlocal foldlevel=0
+  end
+  after
+    silent tabclose
+  end
+
+  it 'uses the current heading'
+    Expect foldtextresult('1')  ==# 'Topmost heading'
+    Expect foldtextresult('5')  ==# 'Second level heading'
+    Expect foldtextresult('9')  ==# 'Third level heading'
+    Expect foldtextresult('13') ==# 'Another third level heading'
+  end
+
+end

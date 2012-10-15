@@ -1,3 +1,20 @@
+function! NestedMarkdownFolds()
+  let depth = HeadingDepth(v:lnum)
+  if depth > 0
+    return ">".depth
+  else
+    return "="
+  endif
+endfunction
+
+function! StackedMarkdownFolds()
+  if HeadingDepth(v:lnum) > 0
+    return ">1"
+  else
+    return "="
+  endif
+endfunction
+
 function! HeadingDepth(lnum)
   let level = 0
   let thisline = getline(a:lnum)
@@ -18,19 +35,8 @@ function! HeadingDepth(lnum)
   return level
 endfunction
 
-function! NestedMarkdownFolds()
-  let depth = HeadingDepth(v:lnum)
-  if depth > 0
-    return ">".depth
-  else
-    return "="
-  endif
-endfunction
-
-function! StackedMarkdownFolds()
-  if HeadingDepth(v:lnum) > 0
-    return ">1"
-  else
-    return "="
-  endif
+function! FoldText()
+  let title = getline( v:foldstart )
+  let title = substitute(title, '^#\+\s*', '', '')
+  return title
 endfunction
