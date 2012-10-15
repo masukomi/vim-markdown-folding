@@ -1,3 +1,23 @@
+function! HeadingDepth(lnum)
+  let level = 0
+  let thisline = getline(a:lnum)
+  let hashes = matchstr(thisline, '^#\{1,6}')
+  let hashCount = len(hashes)
+  if hashCount > 0
+    let level = hashCount
+  else
+    if match(thisline, '^.\+$') >= 0
+      let nextline = getline(a:lnum + 1)
+      if match(nextline, '^===') >= 0
+        let level = 1
+      elseif match(nextline, '^---') >= 0
+        let level = 2
+      endif
+    endif
+  endif
+  return level
+endfunction
+
 function! StackedMarkdownFolds()
   let thisline    = getline(v:lnum)
   let nextline    = getline(v:lnum + 1)

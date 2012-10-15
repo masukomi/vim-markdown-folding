@@ -142,3 +142,35 @@ describe 'Stacked Folding with underlines'
   end
 
 end
+
+describe 'HeadingDepth'
+  before
+    silent tabnew test/headings.md
+    setlocal filetype=markdown
+    setlocal foldmethod=expr
+    setlocal foldexpr=StackedMarkdownFolds()
+    setlocal foldenable
+  end
+
+  it 'returns zero for non-heading lines'
+    Expect HeadingDepth(1)  ==# 0
+    Expect HeadingDepth(6)  ==# 0
+    Expect HeadingDepth(8)  ==# 0
+    Expect HeadingDepth(9)  ==# 0
+    Expect HeadingDepth(11) ==# 0
+    Expect HeadingDepth(13) ==# 0
+    Expect HeadingDepth(15) ==# 0
+  end
+
+  it 'returns the heading level for lines that lead with #'
+    Expect HeadingDepth(2) ==# 1
+    Expect HeadingDepth(3) ==# 2
+    Expect HeadingDepth(4) ==# 3
+    Expect HeadingDepth(5) ==# 4
+  end
+
+  it 'returns heading level for non-blank lines underlined by - or ='
+    Expect HeadingDepth(7) ==# 1
+    Expect HeadingDepth(10) ==# 2
+  end
+end
