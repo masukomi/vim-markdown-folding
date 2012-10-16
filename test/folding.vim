@@ -201,3 +201,33 @@ describe 'FoldText'
   end
 
 end
+
+describe 'ToggleMarkdownFoldexpr()'
+  before
+    silent tabnew test/headings-2.md
+    setlocal filetype=markdown
+    setlocal foldmethod=expr
+    setlocal foldexpr=StackedMarkdownFolds()
+  end
+
+  after
+    silent tabclose
+  end
+
+  it 'does as it says on the tin'
+    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+    silent call ToggleMarkdownFoldexpr()
+    Expect &foldexpr ==# 'NestedMarkdownFolds()'
+    silent call ToggleMarkdownFoldexpr()
+    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+  end
+
+  it 'can be called via commandline mode'
+    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+    FoldToggle
+    Expect &foldexpr ==# 'NestedMarkdownFolds()'
+    FoldToggle
+    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+  end
+
+end

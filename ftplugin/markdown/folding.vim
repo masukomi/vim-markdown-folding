@@ -43,6 +43,15 @@ function! FoldText()
   return indent.' '.title
 endfunction
 
+function! ToggleMarkdownFoldexpr()
+  if &foldexpr == 'StackedMarkdownFolds()'
+    setlocal foldexpr=NestedMarkdownFolds()
+  else
+    setlocal foldexpr=StackedMarkdownFolds()
+  endif
+endfunction
+command! FoldToggle call ToggleMarkdownFoldexpr()
+
 setlocal foldmethod=expr
 setlocal foldexpr=StackedMarkdownFolds()
 setlocal foldtext=FoldText()
