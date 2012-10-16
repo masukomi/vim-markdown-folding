@@ -40,7 +40,8 @@ function! FoldText()
   let indent = repeat('#', level)
   let title = getline(v:foldstart)
   let title = substitute(title, '^#\+\s*', '', '')
-  return indent.' '.title
+  let foldsize = (v:foldend - v:foldstart)+1
+  return indent.' '.title.' ['.foldsize.' lines]'
 endfunction
 
 function! ToggleMarkdownFoldexpr()

@@ -192,12 +192,12 @@ describe 'FoldText'
   end
 
   it 'uses the current heading'
-    Expect foldtextresult('1')   ==# '# Level one'
-    Expect foldtextresult('3')   ==# '## Level two'
-    Expect foldtextresult('5')   ==# '### Level three'
-    Expect foldtextresult('7')   ==# '#### Level four'
-    Expect foldtextresult('10')  ==# '# Level one'
-    Expect foldtextresult('13')  ==# '## Level two'
+    Expect foldtextresult('1')   ==# '# Level one [2 lines]'
+    Expect foldtextresult('3')   ==# '## Level two [2 lines]'
+    Expect foldtextresult('5')   ==# '### Level three [2 lines]'
+    Expect foldtextresult('7')   ==# '#### Level four [3 lines]'
+    Expect foldtextresult('10')  ==# '# Level one [3 lines]'
+    Expect foldtextresult('13')  ==# '## Level two [2 lines]'
   end
 
 end
