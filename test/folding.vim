@@ -231,3 +231,27 @@ describe 'ToggleMarkdownFoldexpr()'
   end
 
 end
+
+describe 'defaults'
+  after
+    silent tabclose
+  end
+
+  it 'uses StackedMarkdownFolds() by default'
+    silent tabnew test/example.md
+    setlocal filetype=markdown
+    Expect &foldmethod ==# 'expr'
+    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+    Expect &foldtext ==# 'FoldText()'
+  end
+
+  it 'uses NestedMarkdownFolds() when specified'
+    let g:markdown_fold_style='nested'
+    silent tabnew test/example.md
+    setlocal filetype=markdown
+    Expect &foldmethod ==# 'expr'
+    Expect &foldexpr ==# 'NestedMarkdownFolds()'
+    Expect &foldtext ==# 'FoldText()'
+  end
+
+end

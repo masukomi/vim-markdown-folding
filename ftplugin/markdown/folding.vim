@@ -53,5 +53,14 @@ endfunction
 command! FoldToggle call ToggleMarkdownFoldexpr()
 
 setlocal foldmethod=expr
-setlocal foldexpr=StackedMarkdownFolds()
 setlocal foldtext=FoldText()
+
+if exists('g:markdown_fold_style')
+  if g:markdown_fold_style ==# 'nested'
+    setlocal foldexpr=NestedMarkdownFolds()
+  else
+    setlocal foldexpr=StackedMarkdownFolds()
+  endif
+else
+  setlocal foldexpr=StackedMarkdownFolds()
+endif
