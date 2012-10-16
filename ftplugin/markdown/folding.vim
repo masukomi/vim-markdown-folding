@@ -42,3 +42,7 @@ function! FoldText()
   let title = substitute(title, '^#\+\s*', '', '')
   return indent.' '.title
 endfunction
+
+setlocal foldmethod=expr
+setlocal foldexpr=StackedMarkdownFolds()
+setlocal foldtext=FoldText()
