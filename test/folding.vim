@@ -232,6 +232,34 @@ describe 'ToggleMarkdownFoldexpr()'
 
 end
 
+describe 'FoldToggle'
+
+  before
+    silent tabnew
+  end
+
+  after
+    silent tabclose
+  end
+
+  it 'is not defined for buffers when filetype!=markdown'
+    setlocal filetype=
+    let status='pass'
+    try
+      FoldToggle
+    catch
+      let status='fail'
+    endtry
+    Expect status ==# 'fail'
+  end
+
+  it 'is defined for buffers when filetype=markdown'
+    setlocal filetype=markdown
+    FoldToggle
+  end
+
+end
+
 describe 'defaults'
   after
     silent tabclose

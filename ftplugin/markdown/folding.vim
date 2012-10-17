@@ -50,7 +50,7 @@ function! ToggleMarkdownFoldexpr()
     setlocal foldexpr=StackedMarkdownFolds()
   endif
 endfunction
-command! FoldToggle call ToggleMarkdownFoldexpr()
+command! -buffer FoldToggle call ToggleMarkdownFoldexpr()
 
 if !exists('g:markdown_fold_style')
   let g:markdown_fold_style = 'stacked'
