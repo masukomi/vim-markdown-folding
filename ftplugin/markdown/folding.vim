@@ -52,15 +52,14 @@ function! ToggleMarkdownFoldexpr()
 endfunction
 command! FoldToggle call ToggleMarkdownFoldexpr()
 
+if !exists('g:markdown_fold_style')
+  let g:markdown_fold_style = 'stacked'
+endif
+
 setlocal foldmethod=expr
 setlocal foldtext=FoldText()
+let &l:foldexpr =
+  \ g:markdown_fold_style ==# 'nested'
+  \ ? 'NestedMarkdownFolds()'
+  \ : 'StackedMarkdownFolds()'
 
-if exists('g:markdown_fold_style')
-  if g:markdown_fold_style ==# 'nested'
-    setlocal foldexpr=NestedMarkdownFolds()
-  else
-    setlocal foldexpr=StackedMarkdownFolds()
-  endif
-else
-  setlocal foldexpr=StackedMarkdownFolds()
-endif
