@@ -33,9 +33,9 @@ describe 'Stacked Folding'
   end
 
   it 'uses the specified local settings'
-    Expect &foldmethod ==# 'expr'
-    Expect &foldexpr ==# 'StackedMarkdownFolds()'
-    Expect &foldenable ==# 1
+    Expect &l:foldmethod ==# 'expr'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
+    Expect &l:foldenable ==# 1
   end
 
   it 'creates a fold for each section'
@@ -215,19 +215,19 @@ describe 'ToggleMarkdownFoldexpr()'
   end
 
   it 'does as it says on the tin'
-    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
     silent call ToggleMarkdownFoldexpr()
-    Expect &foldexpr ==# 'NestedMarkdownFolds()'
+    Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
     silent call ToggleMarkdownFoldexpr()
-    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
   end
 
   it 'can be called via commandline mode'
-    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
     FoldToggle
-    Expect &foldexpr ==# 'NestedMarkdownFolds()'
+    Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
     FoldToggle
-    Expect &foldexpr ==# 'StackedMarkdownFolds()'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
   end
 
 end
@@ -240,18 +240,18 @@ describe 'defaults'
   it 'uses StackedMarkdownFolds() by default'
     silent tabnew test/example.md
     setlocal filetype=markdown
-    Expect &foldmethod ==# 'expr'
-    Expect &foldexpr ==# 'StackedMarkdownFolds()'
-    Expect &foldtext ==# 'FoldText()'
+    Expect &l:foldmethod ==# 'expr'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
+    Expect &l:foldtext ==# 'FoldText()'
   end
 
   it 'uses NestedMarkdownFolds() when specified'
     let g:markdown_fold_style='nested'
     silent tabnew test/example.md
     setlocal filetype=markdown
-    Expect &foldmethod ==# 'expr'
-    Expect &foldexpr ==# 'NestedMarkdownFolds()'
-    Expect &foldtext ==# 'FoldText()'
+    Expect &l:foldmethod ==# 'expr'
+    Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
+    Expect &l:foldtext ==# 'FoldText()'
   end
 
 end

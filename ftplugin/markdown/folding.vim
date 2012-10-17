@@ -44,7 +44,7 @@ function! FoldText()
 endfunction
 
 function! ToggleMarkdownFoldexpr()
-  if &foldexpr == 'StackedMarkdownFolds()'
+  if &l:foldexpr == 'StackedMarkdownFolds()'
     setlocal foldexpr=NestedMarkdownFolds()
   else
     setlocal foldexpr=StackedMarkdownFolds()
