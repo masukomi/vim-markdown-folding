@@ -23,11 +23,11 @@ function! HeadingDepth(lnum)
   if hashCount > 0
     let level = hashCount
   else
-    if match(thisline, '^.\+$') >= 0
+    if thisline != ''
       let nextline = getline(a:lnum + 1)
-      if match(nextline, '^===') >= 0
+      if nextline =~ '^==='
         let level = 1
-      elseif match(nextline, '^---') >= 0
+      elseif nextline =~ '^---'
         let level = 2
       endif
     endif
@@ -38,8 +38,7 @@ endfunction
 function! FoldText()
   let level = HeadingDepth(v:foldstart)
   let indent = repeat('#', level)
-  let title = getline(v:foldstart)
-  let title = substitute(title, '^#\+\s*', '', '')
+  let title = substitute(getline(v:foldstart), '^#\+\s*', '', '')
   let foldsize = (v:foldend - v:foldstart)+1
   return indent.' '.title.' ['.foldsize.' lines]'
 endfunction
