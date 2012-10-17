@@ -1,3 +1,7 @@
+function! s:SID()
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+endfunction
+
 function! NestedMarkdownFolds()
   let depth = HeadingDepth(v:lnum)
   if depth > 0
@@ -57,7 +61,8 @@ if !exists('g:markdown_fold_style')
 endif
 
 setlocal foldmethod=expr
-setlocal foldtext=FoldText()
+let &l:foldtext = s:SID() . 'FoldText()'
+
 let &l:foldexpr =
   \ g:markdown_fold_style ==# 'nested'
   \ ? 'NestedMarkdownFolds()'
