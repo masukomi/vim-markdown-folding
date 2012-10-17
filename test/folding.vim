@@ -283,3 +283,49 @@ describe 'defaults'
   end
 
 end
+
+describe 'setting filetype!=markdown'
+
+  before
+    silent tabnew
+  end
+
+  after
+    silent tabclose
+  end
+
+  it 'resets foldmethod to global default'
+    " setlocal filetype=markdown
+    " Expect &l:foldmethod ==# 'expr'
+    setlocal filetype=
+    Expect &l:foldmethod ==# 'manual'
+  end
+
+  it 'resets foldexpr to global default'
+    " setlocal filetype=markdown
+    " Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
+    setlocal filetype=
+    Expect &l:foldexpr ==# '0'
+  end
+
+  it 'resets foldtext to global default'
+    " setlocal filetype=markdown
+    " Expect &l:foldtext ==# 'FoldText()'
+    setlocal filetype=
+    Expect &l:foldtext ==# 'foldtext()'
+  end
+
+  it 'revokes the FoldToggle command'
+    " setlocal filetype=markdown
+    " FoldToggle
+    setlocal filetype=
+    let status='pass'
+    try
+      FoldToggle
+    catch
+      let status='fail'
+    endtry
+    Expect status ==# 'fail'
+  end
+
+end
