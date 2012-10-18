@@ -68,7 +68,7 @@ let &l:foldexpr =
   \ ? 'NestedMarkdownFolds()'
   \ : 'StackedMarkdownFolds()'
 
-let b:undo_ftplugin = '
-  \   setlocal foldexpr< foldmethod< foldtext<
+let b:undo_ftplugin .= '
+  \ | setlocal foldexpr< foldmethod< foldtext<
   \ | delcommand FoldToggle
   \ '
