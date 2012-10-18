@@ -260,29 +260,29 @@ describe 'FoldToggle'
 
 end
 
-describe 'defaults'
-  after
-    silent tabclose
-  end
+" describe 'defaults'
+"   after
+"     silent tabclose
+"   end
 
-  it 'uses StackedMarkdownFolds() by default'
-    silent tabnew test/example.md
-    setlocal filetype=markdown
-    Expect &l:foldmethod ==# 'expr'
-    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
-    Expect &l:foldtext ==# 'FoldText()'
-  end
+"   it 'uses StackedMarkdownFolds() by default'
+"     silent tabnew test/example.md
+"     setlocal filetype=markdown
+"     Expect &l:foldmethod ==# 'expr'
+"     Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
+"     Expect &l:foldtext ==# 'FoldText()'
+"   end
 
-  it 'uses NestedMarkdownFolds() when specified'
-    let g:markdown_fold_style='nested'
-    silent tabnew test/example.md
-    setlocal filetype=markdown
-    Expect &l:foldmethod ==# 'expr'
-    Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
-    Expect &l:foldtext ==# 'FoldText()'
-  end
+"   it 'uses NestedMarkdownFolds() when specified'
+"     let g:markdown_fold_style='nested'
+"     silent tabnew test/example.md
+"     setlocal filetype=markdown
+"     Expect &l:foldmethod ==# 'expr'
+"     Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
+"     Expect &l:foldtext ==# 'FoldText()'
+"   end
 
-end
+" end
 
 describe 'setting filetype!=markdown'
 
@@ -295,29 +295,29 @@ describe 'setting filetype!=markdown'
   end
 
   it 'resets foldmethod to global default'
-    " setlocal filetype=markdown
-    " Expect &l:foldmethod ==# 'expr'
+    setlocal filetype=markdown
+    Expect &l:foldmethod ==# 'expr'
     setlocal filetype=
     Expect &l:foldmethod ==# 'manual'
   end
 
   it 'resets foldexpr to global default'
-    " setlocal filetype=markdown
-    " Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
+    setlocal filetype=markdown
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
     setlocal filetype=
     Expect &l:foldexpr ==# '0'
   end
 
   it 'resets foldtext to global default'
-    " setlocal filetype=markdown
-    " Expect &l:foldtext ==# 'FoldText()'
+    setlocal filetype=markdown
+    Expect &l:foldtext ==# 'FoldText()'
     setlocal filetype=
     Expect &l:foldtext ==# 'foldtext()'
   end
 
   it 'revokes the FoldToggle command'
-    " setlocal filetype=markdown
-    " FoldToggle
+    setlocal filetype=markdown
+    FoldToggle
     setlocal filetype=
     let status='pass'
     try
