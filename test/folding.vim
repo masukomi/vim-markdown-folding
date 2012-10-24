@@ -68,7 +68,7 @@ describe 'HeadingDepth'
     Expect HeadingDepth(2)  ==# 0
   end
 
-  it 'returns 0 for content lines'
+  it 'returns 0 for lines of content'
     call PopulateBuffer([
           \ 'lorem ipsum dolor sit amet',
           \ 'consequeteur blah blah'
@@ -90,6 +90,43 @@ describe 'HeadingDepth'
   it 'returns 3 for "### Level three headings"'
     call PopulateBuffer('### Level three headings')
     Expect HeadingDepth(1)  ==# 3
+  end
+
+  it 'returns 1 for === underscored headings'
+    call PopulateBuffer([
+          \ 'Level one heading',
+          \ '=================',
+          \ ])
+    Expect HeadingDepth(1)  ==# 1
+    Expect HeadingDepth(2)  ==# 0
+  end
+
+  it 'returns 2 for --- underscored headings'
+    call PopulateBuffer([
+          \ 'Level two heading',
+          \ '-----------------',
+          \ ])
+    Expect HeadingDepth(1)  ==# 2
+    Expect HeadingDepth(2)  ==# 0
+  end
+
+  it 'ignores --- and === when preceded by a blank line'
+    call PopulateBuffer([
+          \ '=================',
+          \ '',
+          \ '=================',
+          \ '',
+          \ '-----------------',
+          \ '',
+          \ '-----------------',
+          \ ])
+    Expect HeadingDepth(1)  ==# 0
+    Expect HeadingDepth(2)  ==# 0
+    Expect HeadingDepth(3)  ==# 0
+    Expect HeadingDepth(4)  ==# 0
+    Expect HeadingDepth(5)  ==# 0
+    Expect HeadingDepth(6)  ==# 0
+    Expect HeadingDepth(7)  ==# 0
   end
 
 end
