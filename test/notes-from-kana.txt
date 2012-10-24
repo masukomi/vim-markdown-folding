@@ -1,0 +1,320 @@
+I've reviewed the implementation.  I'll review the tests later.
+The points I've noticed are as follows:
+
+
+(a) It would be better to define b:undo_ftplugin.
+(see also :help undo_ftplugin.)
+The plugin changes 'foldexpr', 'foldmethod', 'foldtext'
+and defines :FoldToggle.  So the following line should be added:
+
+    let b:undo_ftplugin = '
+    \   setlocal foldexpr< foldmethod< foldtext<
+    \ | delcommand FoldToggle
+    \ '
+
+
+(b) :FoldToggle does mean only for markdown files.
+So that it would be better to define the command only for those files:
+
+    command! -buffer FoldToggle ...
+
+
+(c) Filetype plugins are :source'd whenever 'filetype' is changed.
+So that functions written in the plugin are always redefined
+whenever a markdown file is newly opened.  It might make Vim slow
+if the plugin file becomes big.  If so, consider skipping definitions
+by :finish.
+
+
+(d) The code to initialize options ...
+
+    setlocal foldmethod=expr
+    setlocal foldtext=FoldText()
+
+    if exists('g:markdown_fold_style')
+      if g:markdown_fold_style ==# 'nested'
+        setlocal foldexpr=NestedMarkdownFolds()
+      else
+        setlocal foldexpr=StackedMarkdownFolds()
+      endif
+    else
+      setlocal foldexpr=StackedMarkdownFolds()
+    endif
+
+is somewhat tedious.  How about writing as follows?
+
+    if !exists('g:markdown_fold_style')
+      let g:markdown_fold_style = 'stacked'
+    endif
+
+    setlocal foldmethod=expr
+    setlocal foldtext=FoldText()
+    let &l:foldexpr =
+    \ g:markdown_fold_style ==# 'nested'
+    \ ? 'NestedMarkdownFolds()'
+    \ : 'StackedMarkdownFolds()'
+
+
+(e) All functions are defined in the global scope.  Especially,
+FoldText() is too generic and might conflict with other plugins.
+So that the functions should be defined as script-local ones.
+Though it's not easy to use script-local functions for 'foldexpr' etc,
+it's possible as follows:
+
+    function! s:SID()
+      return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+    endfunction
+
+    let &l:foldtext = s:SID() . 'FoldText()'
+
+
+(f) 'foldexpr' and other options are local to window.
+So that I prefer &l:foldexpr to &foldexpr when referring option values.
+
+
+(g) The following conditions in HeadingDepth()
+
+    if match(thisline, '^.\+$') >= 0
+    if match(nextline, '^===') >= 0
+    elseif match(nextline, '^---') >= 0
+
+could be simplified as follows:
+
+    if thisline != ''
+    if nextline =~ '^==='
+    elseif nextline =~ '^---'
+
+(h) It would be better to avoid the reassignment in FoldText():
+
+    let title = getline(v:foldstart)
+    let title = substitute(title, '^#\+\s*', '', '')
+
+============================================================
+
+
+>> (a) It would be better to define b:undo_ftplugin.
+>> (see also :help undo_ftplugin.)
+>> The plugin changes 'foldexpr', 'foldmethod', 'foldtext'
+>> and defines :FoldToggle.  So the following line should be added:
+>>
+>>     let b:undo_ftplugin = '
+>>     \   setlocal foldexpr< foldmethod< foldtext<
+>>     \ | delcommand FoldToggle
+>>     \ '
+>
+> I've followed your suggestion, but I'm having difficulty testing this.
+> Here's the approach I've taken:
+>
+> https://github.com/nelstrom/vim-markdown-folding/blob/89be7b06d15f2613146b31c86ce6a5128a5fb4b2/test/folding.vim#L297-316
+>
+> When I uncomment the first two lines in each of those specs, the tests fail.
+> I was under the impression that the rules defined under b:undo_ftplugin
+> would be executed when filetype was set to something other than markdown.
+> Did I misunderstand?
+
+Ah, I misunderstood the concept of your plugin.
+It provides additional features for markdown files onto the basic
+configuration provided by $VIMRUNTIME/ftplugin/markdown.vim.
+So that we have to do the following changes:
+
+* Rename ftplugin/markdown/folding.vim as after/ftplugin/markdown/folding.vim.
+* Configure b:undo_ftplugin as follows:
+
+        let b:undo_ftplugin .= '
+        \ | setlocal foldexpr< foldmethod< foldtext<
+        \ | delcommand FoldToggle
+        \ '
+
+It would be a long story why these changes are necessary.
+I'll explain it later.
+
+
+>> (c) Filetype plugins are :source'd whenever 'filetype' is changed.
+>> So that functions written in the plugin are always redefined
+>> whenever a markdown file is newly opened.  It might make Vim slow
+>> if the plugin file becomes big.  If so, consider skipping definitions
+>> by :finish.
+>
+> From the :help :finish documentation, I don't understand how this would
+> help. Can you point to an example of usage?
+
+$VIMRUNTIME/ftplugin/ocaml.vim might be a good example.
+
+
+> As far as I'm concerned, the plugin is feature-complete, so I don't imagine
+> it will become any bigger.
+
+Indeed.
+But it might be useful when you have a chance to write a big plugin.
+
+
+>> (e) All functions are defined in the global scope.  Especially,
+>> [...]
+>
+> Changing the implementation is easy enough, but how can I test this? Having
+> followed your suggestion, vspec reports these failing tests:
+>
+> not ok 18 - defaults uses StackedMarkdownFolds() by default
+> # Expected &l:foldtext ==#  'FoldText()'
+> #       Actual value: '<SNR>6_FoldText()'
+> #     Expected value: 'FoldText()'
+> not ok 19 - defaults uses NestedMarkdownFolds() when specified
+> # Expected &l:foldtext ==#  'FoldText()'
+> #       Actual value: '<SNR>6_FoldText()'
+> #     Expected value: 'FoldText()'
+
+Tests are written to check whether behavior of program is changed or not,
+not to check how it's implemented. So that tests should check what
+functions/options/etc behave, not how functions/options/etc are
+implemented/configured.
+
+The 2 test cases don't make sense.  They check implementation details.
+Such tests are not useful to do refactoring such as "hiding internal
+functions from the global scope."
+
+
+> I've studied your vspec files inside the vspec project itself, and I suspect
+> that this is where the vspec#hint() method comes in useful. e.g.
+>
+> https://github.com/kana/vim-vspec/blob/a079d041f2c672cfd0bd1cb052849cda5d334d2f/t/tools.vim#L1
+>
+> I'm struggling to get my head around it though. Can you explain?
+
+vspec#hint() is a setup tool to write tests which require to get/set
+script-local variable and to call script-local functions.  It is not
+a tool for the problem (e).
+
+============================================================
+
+n Thu, Oct 18, 2012 at 6:34 PM, Kana Natsuno <kana@whileimautomaton.net> wrote:
+> Ah, I misunderstood the concept of your plugin.
+> It provides additional features for markdown files onto the basic
+> configuration provided by $VIMRUNTIME/ftplugin/markdown.vim.
+> So that we have to do the following changes:
+>
+> * Rename ftplugin/markdown/folding.vim as after/ftplugin/markdown/folding.vim.
+> * Configure b:undo_ftplugin as follows:
+>
+>         let b:undo_ftplugin .= '
+>         \ | setlocal foldexpr< foldmethod< foldtext<
+>         \ | delcommand FoldToggle
+>         \ '
+>
+> It would be a long story why these changes are necessary.
+> I'll explain it later.
+
+There are two types of filetype plugins.
+One provides *basic* configurations, and
+the other provides *additional* configurations onto the basic ones.
+
+
+Basic filetype plugins:
+
+(a) Are put into ftplugin directories.
+(b) Skip all configurations if b:did_ftplugin is already set.
+(c) Set b:did_ftplugin to skip loading other plugins for the same filetype.
+
+All plugins under $VIMRUNTIME/ftplugin are basic ones.
+If we want to override the default filetype plugin for "foo",
+we should create a new filetype plugin following (b) and (c)
+and put it into ~/.vim/ftplugin.
+
+
+Additional filetype plugins:
+
+(a) Are put into after/ftplugin directories.
+(b) Ignore whether b:did_ftplugin is set or not.
+    (Because additional ones are always loaded after basic ones.
+     It doesn't make sense to skip by b:did_ftplugin.)
+(c) Do not set b:did_ftplugin.
+
+Your filetype plugin for markdown is an additional one.
+So that it should be put into after/ftplugin and
+append undoing script to b:undo_ftplugin.
+
+
+When your plugin is put into ~/.vim/ftplugin,
+Vim loads filetype plugins in the following order:
+
+1. ~/.vim/ftplugin/markdown/foldind.vim
+2. $VIMRUNTIME/ftplugin/markdown.vim
+
+Both plugins set b:undo_ftplugin, but the default plugin is not expected
+to be loaded after other plugins (unless b:did_ftplugin is set).  So
+that your configuration for b:undo_ftplugin is completely overridden by
+the default plugin.  That's why the specs fail.
+
+============================================================
+
+
+I've reviewed also specs.
+
+
+(a) It would be better to unify the style to write "it", "before" and
+"after" blocks.  Most blocks are surrounded by empty lines, but some
+blocks are not written so.
+
+
+(b) In "before" blocks, several options are set manually.  But most of
+them are not necessary:
+
+* 'filetype' is set to "markdown" by :tabnew test/exale.md etc.
+* 'foldmethod', 'foldexpr' and 'foldtext' are set by your plugin.
+  * Though 'foldexpr' should be adjusted for several examples,
+    I prefer using :FoldToggle.
+* 'foldenable' is enabled by default.
+
+
+(c) In "FoldToggle is not defined for buffers when filetype!=markdown",
+you use :try to check existence of :FoldToggle.  But there is the API
+for that purpose.  The example could be simplified as follows:
+
+    Expect exists(':FoldToggle') == 2
+
+
+(d) "it" block title will be output after "describe" block title.
+So that "it" block titles should be written to make natural sentences
+with "describe" block titles.
+
+For example, an "it" block in the "Nested Folding" block is titled as
+"foldlevel=0: folds everything".  The vspec command outputs a result of
+the test like:
+
+    ok 4 - Nested Folding foldlevel=0: folds everything
+
+But I prefer using "folds everything if foldlevel=0", because output
+will be more readable.
+
+    ok 4 - Nested Folding folds everything if foldlevel=0
+
+
+(e) All expectations should be written with :Expect.  I don't like
+AssertRangeFoldlevel and others to wrap :Expect, because they make tests
+hard to read as natural sentences.
+
+For example, AssertRangeFoldlevel could be rewritten as follows:
+
+    function FoldLevelsInRange(firstLine, lastLine)
+      return map(range(a:firstLine, a:lastLine), 'foldlevel(v:val)')
+    endfunction
+
+    function ToMatch(actualValue, foldLevel)
+      return a:actualValue == repeat([a:foldLevel], len(a:actualValue))
+    endfunction
+
+    call vspec#customize_matcher('toMatch', function('ToMatch'))
+
+    describe '...'
+      it '...'
+        Expect FoldLevelsInRange(1, 15) toMatch 1
+      end
+    end
+
+It would be easier to read and understand than:
+
+    call AssertRangeFoldlevel(1, 15, 1)
+
+Note that vspec#customize_matcher is not perfect yet.
+Messages for failed tests are not user friendly.
+
+
