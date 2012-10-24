@@ -17,6 +17,10 @@ describe 'setting filetype=markdown'
     Expect &l:foldmethod ==# 'expr'
   end
 
+  it 'creates :FoldToggle command'
+    Expect exists(':FoldToggle') == 2
+  end
+
 end
 
 describe 'setting filetype!=markdown'
@@ -33,6 +37,11 @@ describe 'setting filetype!=markdown'
   it 'resets foldmethod to default'
     setlocal filetype=
     Expect &l:foldmethod ==# 'manual'
+  end
+
+  it 'destroys :FoldToggle command'
+    setlocal filetype=
+    Expect exists(':FoldToggle') == 0
   end
 
 end
