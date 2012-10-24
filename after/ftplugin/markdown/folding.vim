@@ -1,4 +1,8 @@
 " Helpers {{{1
+function! s:SID()
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+endfunction
+
 function! HeadingDepth(lnum)
   let level=0
   let thisline = getline(a:lnum)
@@ -17,12 +21,18 @@ function! HeadingDepth(lnum)
   endif
   return level
 endfunction
+
+function! FoldText()
+  return 'placeholder'
+endfunction
+
 " Setup {{{1
 setlocal foldmethod=expr
+let &l:foldtext = s:SID() . 'FoldText()'
 command! -buffer FoldToggle
 " Teardown {{{1
 let b:undo_ftplugin .= '
-  \ | setlocal foldmethod<
+  \ | setlocal foldmethod< foldtext<
   \ | delcommand FoldToggle
   \ '
 " vim:set fdm=marker:

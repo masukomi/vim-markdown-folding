@@ -22,6 +22,10 @@ describe 'setting filetype=markdown'
     Expect &l:foldmethod ==# 'expr'
   end
 
+  it 'applies foldtext=FoldText()'
+    Expect &l:foldtext =~# '<SNR>\d_FoldText()'
+  end
+
   it 'creates :FoldToggle command'
     Expect exists(':FoldToggle') == 2
   end
@@ -42,6 +46,11 @@ describe 'setting filetype!=markdown'
   it 'resets foldmethod to default'
     setlocal filetype=
     Expect &l:foldmethod ==# 'manual'
+  end
+
+  it 'resets foldtext to default'
+    setlocal filetype=
+    Expect &l:foldtext =~# 'foldtext()'
   end
 
   it 'destroys :FoldToggle command'
@@ -128,5 +137,28 @@ describe 'HeadingDepth'
     Expect HeadingDepth(6)  ==# 0
     Expect HeadingDepth(7)  ==# 0
   end
+
+end
+
+describe 'FoldText'
+
+  before
+    silent tabnew
+    setlocal filetype=markdown
+  end
+
+  after
+    silent tabclose!
+  end
+
+  " TODO: return to this after implementing foldexpr
+  " it 'uses "# level one" headings as is'
+  "   call PopulateBuffer([
+  "         \ '# Level one heading',
+  "         \ '',
+  "         \ 'Lorem ipsum dolor sit amet...',
+  "         \ ])
+  "   Expect foldtextresult('1') ==# '# Level one heading [2 lines]'
+  " end
 
 end
