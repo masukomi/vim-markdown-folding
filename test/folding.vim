@@ -217,14 +217,14 @@ describe 'FoldText'
     silent tabclose!
   end
 
-  " TODO: return to this after implementing foldexpr
-  " it 'uses "# level one" headings as is'
-  "   call PopulateBuffer([
-  "         \ '# Level one heading',
-  "         \ '',
-  "         \ 'Lorem ipsum dolor sit amet...',
-  "         \ ])
-  "   Expect foldtextresult('1') ==# '# Level one heading [2 lines]'
-  " end
+  it 'uses "# level one" headings as is'
+    call PopulateBuffer([
+          \ '# Level one heading',
+          \ '',
+          \ 'Lorem ipsum dolor sit amet...',
+          \ ])
+    TODO
+    Expect foldtextresult('1') ==# '# Level one heading [2 lines]'
+  end
 
 end
