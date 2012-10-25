@@ -1,3 +1,12 @@
+" Stacked and Nested fold expressions {{{1
+function! StackedMarkdownFolds()
+  if HeadingDepth(v:lnum) > 0
+    return ">1"
+  else
+    return "="
+  endif
+endfunction
+
 " Helpers {{{1
 function! s:SID()
   return matchstr(expand('<sfile>'), '<SNR>\d\+_')
@@ -28,11 +37,12 @@ endfunction
 
 " Setup {{{1
 setlocal foldmethod=expr
+setlocal foldexpr=StackedMarkdownFolds()
 let &l:foldtext = s:SID() . 'FoldText()'
 command! -buffer FoldToggle
 " Teardown {{{1
 let b:undo_ftplugin .= '
-  \ | setlocal foldmethod< foldtext<
+  \ | setlocal foldmethod< foldtext< foldexpr<
   \ | delcommand FoldToggle
   \ '
 " vim:set fdm=marker:

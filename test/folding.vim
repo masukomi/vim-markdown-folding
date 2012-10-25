@@ -22,6 +22,10 @@ describe 'setting filetype=markdown'
     Expect &l:foldmethod ==# 'expr'
   end
 
+  it 'applies foldexpr=StackedMarkdownFolds()'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
+  end
+
   it 'applies foldtext=FoldText()'
     Expect &l:foldtext =~# '<SNR>\d_FoldText()'
   end
@@ -43,12 +47,17 @@ describe 'setting filetype!=markdown'
     silent tabclose
   end
 
-  it 'resets foldmethod to default'
+  it 'resets foldmethod to global default'
     setlocal filetype=
     Expect &l:foldmethod ==# 'manual'
   end
 
-  it 'resets foldtext to default'
+  it 'resets foldexpr to global default'
+    setlocal filetype=
+    Expect &l:foldexpr ==# '0'
+  end
+
+  it 'resets foldtext to global default'
     setlocal filetype=
     Expect &l:foldtext =~# 'foldtext()'
   end
@@ -140,10 +149,67 @@ describe 'HeadingDepth'
 
 end
 
+describe 'Stacked Folding'
+
+  before
+    silent tabnew test/samples/lorem.md
+    setlocal filetype=markdown
+  end
+
+  after
+    silent tabclose!
+  end
+
+  it 'creates a fold for each section'
+    setlocal foldlevel=0
+    for i in range(1, 15)
+      Expect foldlevel(i) ==# 1
+    endfor
+    for i in range(1,4)
+      Expect foldclosed(i) ==# 1
+      Expect foldclosedend(i) ==# 4
+    endfor
+    for i in range(5,8)
+      Expect foldclosed(i) ==# 5
+      Expect foldclosedend(i) ==# 8
+    endfor
+    for i in range(9, 12)
+      Expect foldclosed(i) ==# 9
+      Expect foldclosedend(i) ==# 12
+    endfor
+    for i in range(13, 15)
+      Expect foldclosed(i) ==# 13
+      Expect foldclosedend(i) ==# 15
+    endfor
+  end
+
+  it 'opens specified folds when told to'
+    setlocal foldlevel=0
+    normal! 1Gza
+    for i in range(1, 4)
+      Expect foldclosed(i) ==# -1
+      Expect foldclosedend(i) ==# -1
+    endfor
+    for i in range(5,8)
+      Expect foldclosed(i) ==# 5
+      Expect foldclosedend(i) ==# 8
+    endfor
+    for i in range(9, 12)
+      Expect foldclosed(i) ==# 9
+      Expect foldclosedend(i) ==# 12
+    endfor
+    for i in range(13, 15)
+      Expect foldclosed(i) ==# 13
+      Expect foldclosedend(i) ==# 15
+    endfor
+  end
+
+end
+
 describe 'FoldText'
 
   before
-    silent tabnew
+    silent tabnew test/samples/lorem.md
     setlocal filetype=markdown
   end
 
