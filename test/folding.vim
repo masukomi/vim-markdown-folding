@@ -389,3 +389,24 @@ describe ':FoldToggle'
   end
 
 end
+
+describe 'default'
+
+  after
+    silent tabclose
+  end
+
+  it 'foldexpr is StackedMarkdownFolds()'
+    silent tabnew
+    setlocal filetype=markdown
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
+  end
+
+  it 'foldexpr can be overridden with g:markdown_fold_style="nested"'
+    let g:markdown_fold_style='nested'
+    silent tabnew
+    setlocal filetype=markdown
+    Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
+  end
+
+end

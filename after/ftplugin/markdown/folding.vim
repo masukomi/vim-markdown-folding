@@ -56,12 +56,20 @@ function! ToggleMarkdownFoldexpr()
     setlocal foldexpr=StackedMarkdownFolds()
   endif
 endfunction
+command! -buffer FoldToggle call ToggleMarkdownFoldexpr()
 
 " Setup {{{1
+if !exists('g:markdown_fold_style')
+  let g:markdown_fold_style = 'stacked'
+endif
+
 setlocal foldmethod=expr
-setlocal foldexpr=StackedMarkdownFolds()
 let &l:foldtext = s:SID() . 'FoldText()'
-command! -buffer FoldToggle call ToggleMarkdownFoldexpr()
+let &l:foldexpr =
+  \ g:markdown_fold_style ==# 'nested'
+  \ ? 'NestedMarkdownFolds()'
+  \ : 'StackedMarkdownFolds()'
+
 " Teardown {{{1
 let b:undo_ftplugin .= '
   \ | setlocal foldmethod< foldtext< foldexpr<
