@@ -32,13 +32,17 @@ function! HeadingDepth(lnum)
 endfunction
 
 function! FoldText()
-  return 'placeholder'
+  let level = HeadingDepth(v:foldstart)
+  let indent = repeat('#', level)
+  let title = substitute(getline(v:foldstart), '^#\+\s*', '', '')
+  let foldsize = (v:foldend - v:foldstart)
+  return indent.' '.title.' ['.foldsize.' lines]'
 endfunction
 
 " Setup {{{1
 setlocal foldmethod=expr
 setlocal foldexpr=StackedMarkdownFolds()
-let &l:foldtext = s:SID() . 'FoldText()'
+setlocal foldtext=FoldText()
 command! -buffer FoldToggle
 " Teardown {{{1
 let b:undo_ftplugin .= '

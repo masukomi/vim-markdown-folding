@@ -73,6 +73,7 @@ describe 'setting filetype=markdown'
   end
 
   it 'applies foldtext=FoldText()'
+    TODO
     Expect &l:foldtext =~# '<SNR>\d_FoldText()'
   end
 
@@ -246,7 +247,7 @@ end
 describe 'FoldText'
 
   before
-    silent tabnew test/samples/lorem.md
+    silent tabnew
     setlocal filetype=markdown
   end
 
@@ -257,11 +258,48 @@ describe 'FoldText'
   it 'uses "# level one" headings as is'
     call PopulateBuffer([
           \ '# Level one heading',
+          \ 'Lorem ipsum dolor sit amet...',
+          \ ])
+    Expect foldtextresult('1') ==# '# Level one heading [1 lines]'
+  end
+
+  it 'uses "## level two" headings as is'
+    call PopulateBuffer([
+          \ '## Level two heading',
           \ '',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    TODO
-    Expect foldtextresult('1') ==# '# Level one heading [2 lines]'
+    Expect foldtextresult('1') ==# '## Level two heading [2 lines]'
+  end
+
+  it 'uses "## level three" headings as is'
+    call PopulateBuffer([
+          \ '### Level three heading',
+          \ '',
+          \ 'Lorem ipsum dolor sit amet,',
+          \ 'consectetur adipiscing elit.',
+          \ ])
+    Expect foldtextresult('1') ==# '### Level three heading [3 lines]'
+  end
+
+  it 'reformats "===" headings to look like "# Level one"'
+    call PopulateBuffer([
+          \ 'Level one heading',
+          \ '=================',
+          \ '',
+          \ 'Lorem ipsum dolor sit amet...',
+          \ ])
+    Expect foldtextresult('1') ==# '# Level one heading [3 lines]'
+  end
+
+  it 'reformats "---" headings to look like "## Level two"'
+    call PopulateBuffer([
+          \ 'Level two heading',
+          \ '-----------------',
+          \ '',
+          \ 'Lorem ipsum dolor sit amet...',
+          \ ])
+    Expect foldtextresult('1') ==# '## Level two heading [3 lines]'
   end
 
 end
