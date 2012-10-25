@@ -249,44 +249,44 @@ describe 'Nested Folding'
     silent tabnew test/samples/lorem.md
     setlocal filetype=markdown
     setlocal foldexpr=NestedMarkdownFolds()
+    setlocal foldlevel=0
   end
 
   after
     silent tabclose!
   end
 
-  it 'foldlevel=0: folds everything'
-    setlocal foldlevel=0
+  it 'sets h1 content to foldlevel 1'
     Expect FoldLevelsInRange(1,4) toMatch 1
+  end
+
+  it 'sets h2 content to foldlevel 2'
     Expect FoldLevelsInRange(5,8) toMatch 2
+  end
+
+  it 'sets h3 content to foldlevel 3'
     Expect FoldLevelsInRange(9,15) toMatch 3
+  end
+
+  it 'folds everything when foldlevel=0'
     Expect FoldBoundariesInRange(1,15) toHaveBoundaries [1,15]
   end
 
-  it 'foldlevel=1: unfolds h1 headings'
+  it 'unfolds h1 headings when foldlevel=1'
     setlocal foldlevel=1
-    Expect FoldLevelsInRange(1,4) toMatch 1
-    Expect FoldLevelsInRange(5,8) toMatch 2
-    Expect FoldLevelsInRange(9,15) toMatch 3
     Expect FoldBoundariesInRange(1, 4) toBeOpen
     Expect FoldBoundariesInRange(5, 15) toBeClosed
   end
 
-  it 'foldlevel=2: unfolds h1 and h2 headings'
+  it 'unfolds h1 and h2 headings when foldlevel=2'
     setlocal foldlevel=2
-    Expect FoldLevelsInRange(1,4) toMatch 1
-    Expect FoldLevelsInRange(5,8) toMatch 2
-    Expect FoldLevelsInRange(9,15) toMatch 3
     Expect FoldBoundariesInRange(1, 8) toBeOpen
     Expect FoldBoundariesInRange(9, 12) toBeClosed
     Expect FoldBoundariesInRange(13, 15) toBeClosed
   end
 
-  it 'foldlevel=3: unfolds h1, h2, and h3 headings'
+  it 'unfolds h1, h2, and h3 headings when foldlevel=3'
     setlocal foldlevel=3
-    Expect FoldLevelsInRange(1,4) toMatch 1
-    Expect FoldLevelsInRange(5,8) toMatch 2
-    Expect FoldLevelsInRange(9,15) toMatch 3
     Expect FoldBoundariesInRange(1, 15) toBeOpen
   end
 end
