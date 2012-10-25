@@ -260,7 +260,7 @@ describe 'FoldText'
           \ '# Level one heading',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') ==# '# Level one heading [1 line]'
+    Expect foldtextresult('1') =~# '^# Level one heading'
   end
 
   it 'uses "## level two" headings as is'
@@ -269,17 +269,17 @@ describe 'FoldText'
           \ '',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') ==# '## Level two heading [2 lines]'
+    Expect foldtextresult('1') =~# '^## Level two heading'
   end
 
-  it 'uses "## level three" headings as is'
+  it 'uses "### level three" headings as is'
     call PopulateBuffer([
           \ '### Level three heading',
           \ '',
           \ 'Lorem ipsum dolor sit amet,',
           \ 'consectetur adipiscing elit.',
           \ ])
-    Expect foldtextresult('1') ==# '### Level three heading [3 lines]'
+    Expect foldtextresult('1') =~# '^### Level three heading'
   end
 
   it 'reformats "===" headings to look like "# Level one"'
@@ -289,7 +289,7 @@ describe 'FoldText'
           \ '',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') ==# '# Level one heading [3 lines]'
+    Expect foldtextresult('1') =~# '^# Level one heading'
   end
 
   it 'reformats "---" headings to look like "## Level two"'
@@ -299,7 +299,25 @@ describe 'FoldText'
           \ '',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') ==# '## Level two heading [3 lines]'
+    Expect foldtextresult('1') =~# '^## Level two heading'
+  end
+
+  it 'shows [1 line] for short folds'
+    call PopulateBuffer([
+          \ '# Level one heading',
+          \ 'Lorem ipsum dolor sit amet...',
+          \ ])
+    Expect foldtextresult('1') =~# '\[1 line\]'
+  end
+
+  it 'shows [N lines] for longer folds'
+    call PopulateBuffer([
+          \ '# Level one heading',
+          \ '',
+          \ 'Lorem ipsum dolor sit amet,',
+          \ 'consectetur adipiscing elit.',
+          \ ])
+    Expect foldtextresult('1') =~# '\[3 lines\]'
   end
 
 end
