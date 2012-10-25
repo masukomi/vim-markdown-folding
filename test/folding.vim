@@ -73,7 +73,6 @@ describe 'setting filetype=markdown'
   end
 
   it 'applies foldtext=FoldText()'
-    TODO
     Expect &l:foldtext =~# '<SNR>\d_FoldText()'
   end
 
