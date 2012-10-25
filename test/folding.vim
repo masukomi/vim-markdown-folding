@@ -17,7 +17,7 @@ endfunction
 
 call vspec#customize_matcher('toMatch', function('ToMatch'))
 
-function! LineRangeFoldBoundaries(firstLine, lastLine)
+function! FoldBoundariesInRange(firstLine, lastLine)
   return map(range(a:firstLine, a:lastLine), '[foldclosed(v:val), foldclosedend(v:val)]')
 endfunction
 
@@ -30,7 +30,28 @@ function! AllMatch(list, value)
   return 1
 endfunction
 
+function! OpenFoldBoundaries(list)
+  " return true for lists such as: [[-1,-1],[-1,-1],[-1,-1]]
+  for i in a:list
+    if i != [-1, -1]
+      return 0
+    endif
+  endfor
+  return 1
+endfunction
+
+function! ClosedFoldBoundaries(list)
+  for i in a:list
+    if i == [-1, -1]
+      return 0
+    endif
+  endfor
+  return 1
+endfunction
+
 call vspec#customize_matcher('toHaveBoundaries', function('AllMatch'))
+call vspec#customize_matcher('toBeClosed', function('ClosedFoldBoundaries'))
+call vspec#customize_matcher('toBeOpen', function('OpenFoldBoundaries'))
 
 describe 'setting filetype=markdown'
 
@@ -188,19 +209,28 @@ describe 'Stacked Folding'
   it 'creates a fold for each section'
     setlocal foldlevel=0
     Expect FoldLevelsInRange(1,15) toMatch 1
-    Expect LineRangeFoldBoundaries(1,4) toHaveBoundaries [1,4]
-    Expect LineRangeFoldBoundaries(5,8) toHaveBoundaries [5,8]
-    Expect LineRangeFoldBoundaries(9,12) toHaveBoundaries [9,12]
-    Expect LineRangeFoldBoundaries(13,15) toHaveBoundaries [13,15]
+    Expect FoldBoundariesInRange(1,4) toHaveBoundaries [1,4]
+    Expect FoldBoundariesInRange(5,8) toHaveBoundaries [5,8]
+    Expect FoldBoundariesInRange(9,12) toHaveBoundaries [9,12]
+    Expect FoldBoundariesInRange(13,15) toHaveBoundaries [13,15]
   end
 
   it 'opens specified folds when told to'
     setlocal foldlevel=0
     normal! 1Gza
-    Expect LineRangeFoldBoundaries(1,4) toHaveBoundaries [-1,-1]
-    Expect LineRangeFoldBoundaries(5,8) toHaveBoundaries [5,8]
-    Expect LineRangeFoldBoundaries(9,12) toHaveBoundaries [9,12]
-    Expect LineRangeFoldBoundaries(13,15) toHaveBoundaries [13,15]
+    Expect FoldBoundariesInRange(1,4) toBeOpen
+    Expect FoldBoundariesInRange(5,15) toBeClosed
+
+    setlocal foldlevel=0
+    normal! 15Gza
+    Expect FoldBoundariesInRange(1,12) toBeClosed
+    Expect FoldBoundariesInRange(13,15) toBeOpen
+
+    setlocal foldlevel=0
+    normal! 5Gza
+    Expect FoldBoundariesInRange(1,4) toBeClosed
+    Expect FoldBoundariesInRange(5,8) toBeOpen
+    Expect FoldBoundariesInRange(9,15) toBeClosed
   end
 
 end
