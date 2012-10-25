@@ -36,7 +36,8 @@ function! FoldText()
   let indent = repeat('#', level)
   let title = substitute(getline(v:foldstart), '^#\+\s*', '', '')
   let foldsize = (v:foldend - v:foldstart)
-  return indent.' '.title.' ['.foldsize.' lines]'
+  let linecount = '['.foldsize.' line'.(foldsize>1?'s':'').']'
+  return indent.' '.title.' '.linecount
 endfunction
 
 " Setup {{{1

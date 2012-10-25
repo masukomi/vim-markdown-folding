@@ -260,7 +260,7 @@ describe 'FoldText'
           \ '# Level one heading',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') ==# '# Level one heading [1 lines]'
+    Expect foldtextresult('1') ==# '# Level one heading [1 line]'
   end
 
   it 'uses "## level two" headings as is'
