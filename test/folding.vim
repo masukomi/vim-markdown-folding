@@ -243,6 +243,54 @@ describe 'Stacked Folding'
 
 end
 
+describe 'Nested Folding'
+
+  before
+    silent tabnew test/samples/lorem.md
+    setlocal filetype=markdown
+    setlocal foldexpr=NestedMarkdownFolds()
+  end
+
+  after
+    silent tabclose!
+  end
+
+  it 'foldlevel=0: folds everything'
+    setlocal foldlevel=0
+    Expect FoldLevelsInRange(1,4) toMatch 1
+    Expect FoldLevelsInRange(5,8) toMatch 2
+    Expect FoldLevelsInRange(9,15) toMatch 3
+    Expect FoldBoundariesInRange(1,15) toHaveBoundaries [1,15]
+  end
+
+  it 'foldlevel=1: unfolds h1 headings'
+    setlocal foldlevel=1
+    Expect FoldLevelsInRange(1,4) toMatch 1
+    Expect FoldLevelsInRange(5,8) toMatch 2
+    Expect FoldLevelsInRange(9,15) toMatch 3
+    Expect FoldBoundariesInRange(1, 4) toBeOpen
+    Expect FoldBoundariesInRange(5, 15) toBeClosed
+  end
+
+  it 'foldlevel=2: unfolds h1 and h2 headings'
+    setlocal foldlevel=2
+    Expect FoldLevelsInRange(1,4) toMatch 1
+    Expect FoldLevelsInRange(5,8) toMatch 2
+    Expect FoldLevelsInRange(9,15) toMatch 3
+    Expect FoldBoundariesInRange(1, 8) toBeOpen
+    Expect FoldBoundariesInRange(9, 12) toBeClosed
+    Expect FoldBoundariesInRange(13, 15) toBeClosed
+  end
+
+  it 'foldlevel=3: unfolds h1, h2, and h3 headings'
+    setlocal foldlevel=3
+    Expect FoldLevelsInRange(1,4) toMatch 1
+    Expect FoldLevelsInRange(5,8) toMatch 2
+    Expect FoldLevelsInRange(9,15) toMatch 3
+    Expect FoldBoundariesInRange(1, 15) toBeOpen
+  end
+end
+
 describe 'FoldText'
 
   before

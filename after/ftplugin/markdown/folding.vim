@@ -7,6 +7,15 @@ function! StackedMarkdownFolds()
   endif
 endfunction
 
+function! NestedMarkdownFolds()
+  let depth = HeadingDepth(v:lnum)
+  if depth > 0
+    return ">".depth
+  else
+    return "="
+  endif
+endfunction
+
 " Helpers {{{1
 function! s:SID()
   return matchstr(expand('<sfile>'), '<SNR>\d\+_')
