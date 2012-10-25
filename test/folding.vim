@@ -17,6 +17,21 @@ endfunction
 
 call vspec#customize_matcher('toMatch', function('ToMatch'))
 
+function! LineRangeFoldBoundaries(firstLine, lastLine)
+  return map(range(a:firstLine, a:lastLine), '[foldclosed(v:val), foldclosedend(v:val)]')
+endfunction
+
+function! AllMatch(list, value)
+  for i in a:list
+    if i != a:value
+      return 0
+    endif
+  endfor
+  return 1
+endfunction
+
+call vspec#customize_matcher('toHaveBoundaries', function('AllMatch'))
+
 describe 'setting filetype=markdown'
 
   before
@@ -173,43 +188,19 @@ describe 'Stacked Folding'
   it 'creates a fold for each section'
     setlocal foldlevel=0
     Expect FoldLevelsInRange(1,15) toMatch 1
-    for i in range(1,4)
-      Expect foldclosed(i) ==# 1
-      Expect foldclosedend(i) ==# 4
-    endfor
-    for i in range(5,8)
-      Expect foldclosed(i) ==# 5
-      Expect foldclosedend(i) ==# 8
-    endfor
-    for i in range(9, 12)
-      Expect foldclosed(i) ==# 9
-      Expect foldclosedend(i) ==# 12
-    endfor
-    for i in range(13, 15)
-      Expect foldclosed(i) ==# 13
-      Expect foldclosedend(i) ==# 15
-    endfor
+    Expect LineRangeFoldBoundaries(1,4) toHaveBoundaries [1,4]
+    Expect LineRangeFoldBoundaries(5,8) toHaveBoundaries [5,8]
+    Expect LineRangeFoldBoundaries(9,12) toHaveBoundaries [9,12]
+    Expect LineRangeFoldBoundaries(13,15) toHaveBoundaries [13,15]
   end
 
   it 'opens specified folds when told to'
     setlocal foldlevel=0
     normal! 1Gza
-    for i in range(1, 4)
-      Expect foldclosed(i) ==# -1
-      Expect foldclosedend(i) ==# -1
-    endfor
-    for i in range(5,8)
-      Expect foldclosed(i) ==# 5
-      Expect foldclosedend(i) ==# 8
-    endfor
-    for i in range(9, 12)
-      Expect foldclosed(i) ==# 9
-      Expect foldclosedend(i) ==# 12
-    endfor
-    for i in range(13, 15)
-      Expect foldclosed(i) ==# 13
-      Expect foldclosedend(i) ==# 15
-    endfor
+    Expect LineRangeFoldBoundaries(1,4) toHaveBoundaries [-1,-1]
+    Expect LineRangeFoldBoundaries(5,8) toHaveBoundaries [5,8]
+    Expect LineRangeFoldBoundaries(9,12) toHaveBoundaries [9,12]
+    Expect LineRangeFoldBoundaries(13,15) toHaveBoundaries [13,15]
   end
 
 end
