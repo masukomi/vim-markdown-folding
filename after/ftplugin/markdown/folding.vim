@@ -49,11 +49,19 @@ function! s:FoldText()
   return indent.' '.title.' '.linecount
 endfunction
 
+function! ToggleMarkdownFoldexpr()
+  if &l:foldexpr == 'StackedMarkdownFolds()'
+    setlocal foldexpr=NestedMarkdownFolds()
+  else
+    setlocal foldexpr=StackedMarkdownFolds()
+  endif
+endfunction
+
 " Setup {{{1
 setlocal foldmethod=expr
 setlocal foldexpr=StackedMarkdownFolds()
 let &l:foldtext = s:SID() . 'FoldText()'
-command! -buffer FoldToggle
+command! -buffer FoldToggle call ToggleMarkdownFoldexpr()
 " Teardown {{{1
 let b:undo_ftplugin .= '
   \ | setlocal foldmethod< foldtext< foldexpr<

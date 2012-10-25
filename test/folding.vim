@@ -368,3 +368,24 @@ describe 'FoldText'
   end
 
 end
+
+describe ':FoldToggle'
+
+  before
+    silent tabnew
+    setlocal filetype=markdown
+  end
+
+  after
+    silent tabclose!
+  end
+
+  it 'switches between Stacked/Nested folding styles'
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
+    FoldToggle
+    Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
+    FoldToggle
+    Expect &l:foldexpr ==# 'StackedMarkdownFolds()'
+  end
+
+end
