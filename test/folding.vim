@@ -206,31 +206,39 @@ describe 'Stacked Folding'
     silent tabclose!
   end
 
-  it 'creates a fold for each section'
+  it 'sets everything to foldlevel=1'
     setlocal foldlevel=0
     Expect FoldLevelsInRange(1,15) toMatch 1
+  end
+
+  it 'creates a separate fold for each section'
+    setlocal foldlevel=0
     Expect FoldBoundariesInRange(1,4) toHaveBoundaries [1,4]
     Expect FoldBoundariesInRange(5,8) toHaveBoundaries [5,8]
     Expect FoldBoundariesInRange(9,12) toHaveBoundaries [9,12]
     Expect FoldBoundariesInRange(13,15) toHaveBoundaries [13,15]
   end
 
-  it 'opens specified folds when told to'
+  it 'can unfold "# Top level headings"'
     setlocal foldlevel=0
     normal! 1Gza
     Expect FoldBoundariesInRange(1,4) toBeOpen
     Expect FoldBoundariesInRange(5,15) toBeClosed
+  end
 
-    setlocal foldlevel=0
-    normal! 15Gza
-    Expect FoldBoundariesInRange(1,12) toBeClosed
-    Expect FoldBoundariesInRange(13,15) toBeOpen
-
+  it 'can unfold "## Second level headings"'
     setlocal foldlevel=0
     normal! 5Gza
     Expect FoldBoundariesInRange(1,4) toBeClosed
     Expect FoldBoundariesInRange(5,8) toBeOpen
     Expect FoldBoundariesInRange(9,15) toBeClosed
+  end
+
+  it 'can unfold "### Third level headings"'
+    setlocal foldlevel=0
+    normal! 15Gza
+    Expect FoldBoundariesInRange(1,12) toBeClosed
+    Expect FoldBoundariesInRange(13,15) toBeOpen
   end
 
 end
