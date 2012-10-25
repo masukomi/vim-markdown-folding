@@ -7,6 +7,16 @@ function! PopulateBuffer(content)
   1 delete
 endfunction
 
+function FoldLevelsInRange(firstLine, lastLine)
+  return map(range(a:firstLine, a:lastLine), 'foldlevel(v:val)')
+endfunction
+
+function ToMatch(actualValue, foldLevel)
+  return a:actualValue == repeat([a:foldLevel], len(a:actualValue))
+endfunction
+
+call vspec#customize_matcher('toMatch', function('ToMatch'))
+
 describe 'setting filetype=markdown'
 
   before
@@ -162,9 +172,7 @@ describe 'Stacked Folding'
 
   it 'creates a fold for each section'
     setlocal foldlevel=0
-    for i in range(1, 15)
-      Expect foldlevel(i) ==# 1
-    endfor
+    Expect FoldLevelsInRange(1,15) toMatch 1
     for i in range(1,4)
       Expect foldclosed(i) ==# 1
       Expect foldclosedend(i) ==# 4
