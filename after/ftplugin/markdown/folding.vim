@@ -1,4 +1,4 @@
-" Stacked and Nested fold expressions {{{1
+" Fold expressions {{{1
 function! StackedMarkdownFolds()
   if HeadingDepth(v:lnum) > 0
     return ">1"
@@ -49,8 +49,9 @@ function! s:FoldText()
   return indent.' '.title.' '.linecount
 endfunction
 
+" API {{{1
 function! ToggleMarkdownFoldexpr()
-  if &l:foldexpr == 'StackedMarkdownFolds()'
+  if &l:foldexpr ==# 'StackedMarkdownFolds()'
     setlocal foldexpr=NestedMarkdownFolds()
   else
     setlocal foldexpr=StackedMarkdownFolds()
