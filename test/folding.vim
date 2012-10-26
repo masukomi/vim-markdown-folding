@@ -31,22 +31,11 @@ function! AllMatch(list, value)
 endfunction
 
 function! OpenFoldBoundaries(list)
-  " return true for lists such as: [[-1,-1],[-1,-1],[-1,-1]]
-  for i in a:list
-    if i != [-1, -1]
-      return 0
-    endif
-  endfor
-  return 1
+  return AllMatch(a:list, [-1, -1])
 endfunction
 
 function! ClosedFoldBoundaries(list)
-  for i in a:list
-    if i == [-1, -1]
-      return 0
-    endif
-  endfor
-  return 1
+  return !AllMatch(a:list, [-1, -1])
 endfunction
 
 call vspec#customize_matcher('toHaveBoundaries', function('AllMatch'))
