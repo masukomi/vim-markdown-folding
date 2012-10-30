@@ -30,12 +30,21 @@ function! AllMatch(list, value)
   return 1
 endfunction
 
+function! NoneMatch(list, value)
+  for i in a:list
+    if i == a:value
+      return 0
+    endif
+  endfor
+  return 1
+endfunction
+
 function! OpenFoldBoundaries(list)
   return AllMatch(a:list, [-1, -1])
 endfunction
 
 function! ClosedFoldBoundaries(list)
-  return !AllMatch(a:list, [-1, -1])
+  return NoneMatch(a:list, [-1, -1])
 endfunction
 
 call vspec#customize_matcher('toHaveBoundaries', function('AllMatch'))
