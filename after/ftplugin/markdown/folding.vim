@@ -37,7 +37,41 @@ function! HeadingDepth(lnum)
       endif
     endif
   endif
+  if level > 0 && LineIsFenced(a:lnum)
+    " Ignore # or === if they appear within fenced code blocks
+    let level = 0
+  endif
   return level
+endfunction
+
+function! LineIsFenced(lnum)
+  if exists("b:current_syntax") && b:current_syntax ==# 'markdown'
+    " It's cheap to check if the current line has 'markdownCode' syntax group
+    return s:HasSyntaxGroup(a:lnum, 'markdownCode')
+  else
+    " Using searchpairpos() is expensive, so only do it if syntax highlighting
+    " is not enabled
+    return s:HasSurroundingFencemarks(a:lnum)
+  endif
+endfunction
+
+function! s:HasSyntaxGroup(lnum, targetGroup)
+  let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
+  for value in syntaxGroup
+    if value =~ '\vmarkdown(Code|Highlight)'
+      return 1
+    endif
+  endfor
+endfunction
+
+function! s:HasSurroundingFencemarks(lnum)
+  let cursorPosition = [line("."), col(".")]
+  call cursor(a:lnum, 1)
+  let startFence = '\%^```\|^\n\zs```'
+  let endFence = '```\n^$'
+  let fenceEndPosition = searchpairpos(startFence,'',endFence,'W')
+  call cursor(cursorPosition)
+  return fenceEndPosition != [0,0]
 endfunction
 
 function! s:FoldText()

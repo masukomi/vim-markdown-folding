@@ -1,5 +1,5 @@
 " Helpful mapping for executing specs:
-" nnoremap <leader>r :wa <bar> ! ../vspec/bin/vspec ../vspec/ . test/folding.vim<CR>
+" nnoremap <leader>r :wa <bar> ! ../vspec/bin/vspec ../vspec/ ../vim-markdown . test/folding.vim<CR>
 silent filetype plugin on
 
 function! PopulateBuffer(content)
@@ -71,7 +71,7 @@ describe 'setting filetype=markdown'
   end
 
   it 'applies foldtext=FoldText()'
-    Expect &l:foldtext =~# '<SNR>\d_FoldText()'
+    Expect &l:foldtext =~# '<SNR>\d\+_FoldText()'
   end
 
   it 'creates :FoldToggle command'
@@ -189,6 +189,59 @@ describe 'HeadingDepth'
     Expect HeadingDepth(5)  ==# 0
     Expect HeadingDepth(6)  ==# 0
     Expect HeadingDepth(7)  ==# 0
+  end
+
+end
+
+describe 'LineIsFenced()'
+
+  before
+    silent tabnew test/samples/fenced-code-blocks.md
+    setlocal filetype=markdown
+  end
+
+  after
+    syntax off
+    silent tabclose!
+  end
+
+  it 'returns 1 for lines inside a fenced code block (with syntax disabled)'
+    syntax off
+    Expect LineIsFenced(1)  ==# 1
+    Expect LineIsFenced(2)  ==# 1
+    Expect LineIsFenced(3)  ==# 0
+    Expect LineIsFenced(4)  ==# 0
+    Expect LineIsFenced(5)  ==# 0
+    Expect LineIsFenced(6)  ==# 0
+    Expect LineIsFenced(7)  ==# 1
+    Expect LineIsFenced(8)  ==# 1
+    Expect LineIsFenced(9)  ==# 0
+    Expect LineIsFenced(10)  ==# 0
+    Expect LineIsFenced(11)  ==# 0
+    Expect LineIsFenced(12)  ==# 0
+    Expect LineIsFenced(13)  ==# 1
+    Expect LineIsFenced(14)  ==# 1
+    Expect LineIsFenced(15)  ==# 0
+  end
+
+  it 'returns 1 for lines inside a fenced code block (with syntax enabled)'
+    syntax on
+    Expect b:current_syntax ==# 'markdown'
+    Expect LineIsFenced(1)  ==# 1
+    Expect LineIsFenced(2)  ==# 1
+    Expect LineIsFenced(3)  ==# 1
+    Expect LineIsFenced(4)  ==# 0
+    Expect LineIsFenced(5)  ==# 0
+    Expect LineIsFenced(6)  ==# 0
+    Expect LineIsFenced(7)  ==# 1
+    Expect LineIsFenced(8)  ==# 1
+    Expect LineIsFenced(9)  ==# 1
+    Expect LineIsFenced(10)  ==# 0
+    Expect LineIsFenced(11)  ==# 0
+    Expect LineIsFenced(12)  ==# 0
+    Expect LineIsFenced(13)  ==# 1
+    Expect LineIsFenced(14)  ==# 1
+    Expect LineIsFenced(15)  ==# 1
   end
 
 end
@@ -405,6 +458,27 @@ describe 'default'
     silent tabnew
     setlocal filetype=markdown
     Expect &l:foldexpr ==# 'NestedMarkdownFolds()'
+  end
+
+end
+
+describe 'Fenced code blocks'
+
+  before
+    syntax on
+    silent tabnew test/samples/cpp-readme.md
+    setlocal filetype=markdown
+  end
+
+  after
+    silent tabclose
+    syntax off
+  end
+
+  it 'do not create new folds, even when a line starts with #'
+    setlocal foldlevel=0
+    Expect FoldBoundariesInRange(1,12) toHaveBoundaries [1,12]
+    Expect FoldBoundariesInRange(13,24) toHaveBoundaries [13,24]
   end
 
 end
