@@ -196,7 +196,7 @@ end
 describe 'IsFenced'
 
   before
-    silent tabnew
+    silent tabnew test/samples/fenced-code-blocks.md
     setlocal filetype=markdown
   end
 
@@ -205,22 +205,21 @@ describe 'IsFenced'
   end
 
   it 'returns 1 for lines inside a fenced code block'
-    call PopulateBuffer([
-          \ '```cpp',
-          \ '#include <iostream>',
-          \ 'void main()',
-          \ '{',
-          \ '  std::cout << "Hello world!";',
-          \ '}',
-          \ '```',
-          \ ])
     Expect IsFenced(1)  ==# 1
     Expect IsFenced(2)  ==# 1
-    Expect IsFenced(3)  ==# 1
-    Expect IsFenced(4)  ==# 1
-    Expect IsFenced(5)  ==# 1
-    Expect IsFenced(6)  ==# 1
-    Expect IsFenced(7)  ==# 0
+    Expect IsFenced(3)  ==# 0
+    Expect IsFenced(4)  ==# 0
+    Expect IsFenced(5)  ==# 0
+    Expect IsFenced(6)  ==# 0
+    Expect IsFenced(7)  ==# 1
+    Expect IsFenced(8)  ==# 1
+    Expect IsFenced(9)  ==# 0
+    Expect IsFenced(10)  ==# 0
+    Expect IsFenced(11)  ==# 0
+    Expect IsFenced(12)  ==# 0
+    Expect IsFenced(13)  ==# 1
+    Expect IsFenced(14)  ==# 1
+    Expect IsFenced(15)  ==# 0
   end
 
 end
@@ -455,7 +454,7 @@ describe 'Fenced code blocks'
   it 'do not create new folds, even when a line starts with #'
     setlocal foldlevel=0
     Expect FoldBoundariesInRange(1,12) toHaveBoundaries [1,12]
-    Expect FoldBoundariesInRange(13,15) toHaveBoundaries [13,15]
+    Expect FoldBoundariesInRange(13,24) toHaveBoundaries [13,24]
   end
 
 end

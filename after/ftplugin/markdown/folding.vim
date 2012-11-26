@@ -44,9 +44,11 @@ endfunction
 function! IsFenced(lnum)
   let cursorPosition = [line("."), col(".")]
   call cursor(a:lnum, 1)
-  let closingFencePost = searchpairpos('^```\w','','^```','W')
+  let startFence = '\%^```\|^\n\zs```'
+  let endFence = '```\n^$'
+  let fenceEndPosition = searchpairpos(startFence,'',endFence,'W')
   call cursor(cursorPosition)
-  return closingFencePost != [0,0]
+  return fenceEndPosition != [0,0]
 endfunction
 
 function! s:FoldText()

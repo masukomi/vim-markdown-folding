@@ -10,6 +10,15 @@ void main()
 }
 ```
 
-# Lorem ipsum
+# Same again
 
-Dolor sit amet...
+Here's the same program, without the label on the fenced code block
+
+```
+#include <iostream>
+void main()
+{
+  std::cout << "Hello world!";
+}
+```
+
