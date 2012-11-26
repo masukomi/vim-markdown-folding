@@ -40,6 +40,14 @@ function! HeadingDepth(lnum)
   return level
 endfunction
 
+function! IsFenced(lnum)
+  let cursorPosition = [line("."), col(".")]
+  call cursor(a:lnum, 1)
+  let closingFencePost = searchpairpos('^```\w','','^```','W')
+  call cursor(cursorPosition)
+  return closingFencePost != [0,0]
+endfunction
+
 function! s:FoldText()
   let level = HeadingDepth(v:foldstart)
   let indent = repeat('#', level)

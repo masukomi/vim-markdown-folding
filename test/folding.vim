@@ -193,6 +193,38 @@ describe 'HeadingDepth'
 
 end
 
+describe 'IsFenced'
+
+  before
+    silent tabnew
+    setlocal filetype=markdown
+  end
+
+  after
+    silent tabclose!
+  end
+
+  it 'returns 1 for lines inside a fenced code block'
+    call PopulateBuffer([
+          \ '```cpp',
+          \ '#include <iostream>',
+          \ 'void main()',
+          \ '{',
+          \ '  std::cout << "Hello world!";',
+          \ '}',
+          \ '```',
+          \ ])
+    Expect IsFenced(1)  ==# 1
+    Expect IsFenced(2)  ==# 1
+    Expect IsFenced(3)  ==# 1
+    Expect IsFenced(4)  ==# 1
+    Expect IsFenced(5)  ==# 1
+    Expect IsFenced(6)  ==# 1
+    Expect IsFenced(7)  ==# 0
+  end
+
+end
+
 describe 'Stacked Folding'
 
   before
