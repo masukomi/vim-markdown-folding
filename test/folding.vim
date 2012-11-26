@@ -440,3 +440,22 @@ describe 'default'
   end
 
 end
+
+describe 'Fenced code blocks'
+
+  before
+    silent tabnew test/samples/cpp-readme.md
+    setlocal filetype=markdown
+  end
+
+  after
+    silent tabclose
+  end
+
+  it 'do not create new folds, even when a line starts with #'
+    setlocal foldlevel=0
+    Expect FoldBoundariesInRange(1,12) toHaveBoundaries [1,12]
+    Expect FoldBoundariesInRange(13,15) toHaveBoundaries [13,15]
+  end
+
+end
