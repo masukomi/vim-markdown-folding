@@ -22,11 +22,11 @@ function! s:SID()
 endfunction
 
 function! HeadingDepth(lnum)
-  if IsFenced(a:lnum) | return 0 | endif
   let level=0
   let thisline = getline(a:lnum)
   let hashCount = len(matchstr(thisline, '^#\{1,6}'))
   if hashCount > 0
+    if IsFenced(a:lnum) | return 0 | endif
     let level = hashCount
   else
     if thisline != ''
