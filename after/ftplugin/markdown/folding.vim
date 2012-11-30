@@ -42,13 +42,8 @@ function! HeadingDepth(lnum)
 endfunction
 
 function! IsFenced(lnum)
-  let cursorPosition = [line("."), col(".")]
-  call cursor(a:lnum, 1)
-  let startFence = '\%^```\|^\n\zs```'
-  let endFence = '```\n^$'
-  let fenceEndPosition = searchpairpos(startFence,'',endFence,'W')
-  call cursor(cursorPosition)
-  return fenceEndPosition != [0,0]
+  let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
+  return index(syntaxGroup, 'markdownCode') >= 0
 endfunction
 
 function! s:FoldText()

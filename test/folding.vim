@@ -1,5 +1,5 @@
 " Helpful mapping for executing specs:
-" nnoremap <leader>r :wa <bar> ! ../vspec/bin/vspec ../vspec/ . test/folding.vim<CR>
+" nnoremap <leader>r :wa <bar> ! ../vspec/bin/vspec ../vspec/ ../vim-markdown . test/folding.vim<CR>
 silent filetype plugin on
 
 function! PopulateBuffer(content)
@@ -71,7 +71,7 @@ describe 'setting filetype=markdown'
   end
 
   it 'applies foldtext=FoldText()'
-    Expect &l:foldtext =~# '<SNR>\d_FoldText()'
+    Expect &l:foldtext =~# '<SNR>\d\+_FoldText()'
   end
 
   it 'creates :FoldToggle command'
@@ -196,15 +196,18 @@ end
 describe 'IsFenced'
 
   before
+    syntax on
     silent tabnew test/samples/fenced-code-blocks.md
     setlocal filetype=markdown
   end
 
   after
+    syntax off
     silent tabclose!
   end
 
   it 'returns 1 for lines inside a fenced code block'
+    Expect b:current_syntax ==# 'markdown'
     Expect IsFenced(1)  ==# 1
     Expect IsFenced(2)  ==# 1
     Expect IsFenced(3)  ==# 0
@@ -443,12 +446,14 @@ end
 describe 'Fenced code blocks'
 
   before
+    syntax on
     silent tabnew test/samples/cpp-readme.md
     setlocal filetype=markdown
   end
 
   after
     silent tabclose
+    syntax off
   end
 
   it 'do not create new folds, even when a line starts with #'

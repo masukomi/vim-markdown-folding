@@ -1,11 +1,11 @@
 SCRIPT  /Users/drew/dotfiles/vim/bundle/vim-markdown-folding/after/ftplugin/markdown/folding.vim
 Sourced 1 time
-Total time:   0.000200
- Self time:   0.000183
+Total time:   0.000303
+ Self time:   0.000279
 
 count  total (s)   self (s)
                             " Fold expressions {{{1
-    1              0.000012 function! StackedMarkdownFolds()
+    1              0.000006 function! StackedMarkdownFolds()
                               if HeadingDepth(v:lnum) > 0
                                 return ">1"
                               else
@@ -23,7 +23,7 @@ count  total (s)   self (s)
                             endfunction
                             
                             " Helpers {{{1
-    1              0.000008 function! s:SID()
+    1              0.000006 function! s:SID()
                               return matchstr(expand('<sfile>'), '<SNR>\d\+_')
                             endfunction
                             
@@ -47,14 +47,9 @@ count  total (s)   self (s)
                               return level
                             endfunction
                             
-    1              0.000002 function! IsFenced(lnum)
-                              let cursorPosition = [line("."), col(".")]
-                              call cursor(a:lnum, 1)
-                              let startFence = '\%^```\|^\n\zs```'
-                              let endFence = '```\n^$'
-                              let fenceEndPosition = searchpairpos(startFence,'',endFence,'W')
-                              call cursor(cursorPosition)
-                              return fenceEndPosition != [0,0]
+    1              0.000003 function! IsFenced(lnum)
+                              let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
+                              return index(syntaxGroup, 'markdownCode') >= 0
                             endfunction
                             
     1              0.000002 function! s:FoldText()
@@ -74,53 +69,59 @@ count  total (s)   self (s)
                                 setlocal foldexpr=StackedMarkdownFolds()
                               endif
                             endfunction
-    1              0.000017 command! -buffer FoldToggle call ToggleMarkdownFoldexpr()
+    1              0.000022 command! -buffer FoldToggle call ToggleMarkdownFoldexpr()
                             
                             " Setup {{{1
-    1              0.000007 if !exists('g:markdown_fold_style')
-    1              0.000004   let g:markdown_fold_style = 'stacked'
+    1              0.000009 if !exists('g:markdown_fold_style')
+    1              0.000006   let g:markdown_fold_style = 'stacked'
     1              0.000002 endif
                             
-    1              0.000006 setlocal foldmethod=expr
-    1   0.000028   0.000011 let &l:foldtext = s:SID() . 'FoldText()'
-    1              0.000008 let &l:foldexpr =
+    1              0.000008 setlocal foldmethod=expr
+    1   0.000038   0.000014 let &l:foldtext = s:SID() . 'FoldText()'
+    1              0.000012 let &l:foldexpr =
                               \ g:markdown_fold_style ==# 'nested'
                               \ ? 'NestedMarkdownFolds()'
                               \ : 'StackedMarkdownFolds()'
                             
                             " Teardown {{{1
-    1              0.000007 let b:undo_ftplugin .= '
+    1              0.000011 let b:undo_ftplugin .= '
                               \ | setlocal foldmethod< foldtext< foldexpr<
                               \ | delcommand FoldToggle
                               \ '
                             " vim:set fdm=marker:
 
-FUNCTION  <SNR>78_FoldText()
-Called 39 times
-Total time:   0.420161
- Self time:   0.001705
+FUNCTION  <SNR>79_SID()
+Called 1 time
+Total time:   0.000023
+ Self time:   0.000023
 
 count  total (s)   self (s)
-   39   0.418978   0.000522   let level = HeadingDepth(v:foldstart)
-   39              0.000140   let indent = repeat('#', level)
-   39              0.000403   let title = substitute(getline(v:foldstart), '^#\+\s*', '', '')
-   39              0.000193   let foldsize = (v:foldend - v:foldstart)
-   39              0.000208   let linecount = '['.foldsize.' line'.(foldsize>1?'s':'').']'
-   39              0.000152   return indent.' '.title.' '.linecount
+    1              0.000021   return matchstr(expand('<sfile>'), '<SNR>\d\+_')
 
-FUNCTION  IsFenced()
-Called 289 times
-Total time:   1.207841
- Self time:   1.207841
+FUNCTION  StackedMarkdownFolds()
+Called 3000 times
+Total time:   0.341827
+ Self time:   0.026745
 
 count  total (s)   self (s)
-  289              0.001520   let cursorPosition = [line("."), col(".")]
-  289              0.000900   call cursor(a:lnum, 1)
-  289              0.000636   let startFence = '\%^```\|^\n\zs```'
-  289              0.000508   let endFence = '```\n^$'
-  289              1.201369   let fenceEndPosition = searchpairpos(startFence,'',endFence,'W')
-  289              0.001346   call cursor(cursorPosition)
-  289              0.000879   return fenceEndPosition != [0,0]
+ 3000   0.331025   0.015943   if HeadingDepth(v:lnum) > 0
+  250              0.000342     return ">1"
+                              else
+ 2750              0.002636     return "="
+                              endif
+
+FUNCTION  <SNR>79_FoldText()
+Called 48 times
+Total time:   0.012584
+ Self time:   0.001970
+
+count  total (s)   self (s)
+   48   0.011021   0.000407   let level = HeadingDepth(v:foldstart)
+   48              0.000193   let indent = repeat('#', level)
+   48              0.000518   let title = substitute(getline(v:foldstart), '^#\+\s*', '', '')
+   48              0.000244   let foldsize = (v:foldend - v:foldstart)
+   48              0.000286   let linecount = '['.foldsize.' line'.(foldsize>1?'s':'').']'
+   48              0.000212   return indent.' '.title.' '.linecount
 
 FUNCTION  NestedMarkdownFolds()
 Called 0 times
@@ -135,49 +136,29 @@ count  total (s)   self (s)
                                 return "="
                               endif
 
-FUNCTION  StackedMarkdownFolds()
-Called 1500 times
-Total time:   0.856970
- Self time:   0.012528
-
-count  total (s)   self (s)
- 1500   0.851939   0.007497   if HeadingDepth(v:lnum) > 0
-  125              0.000154     return ">1"
-                              else
- 1375              0.001192     return "="
-                              endif
-
 FUNCTION  HeadingDepth()
-Called 1539 times
-Total time:   1.262898
- Self time:   0.055057
+Called 3048 times
+Total time:   0.325696
+ Self time:   0.118745
 
 count  total (s)   self (s)
- 1539              0.002939   let level=0
- 1539              0.005227   let thisline = getline(a:lnum)
- 1539              0.011059   let hashCount = len(matchstr(thisline, '^#\{1,6}'))
- 1539              0.002263   if hashCount > 0
-  289   1.209882   0.002041     if IsFenced(a:lnum) | return 0 | endif
-  164              0.000362     let level = hashCount
-  164              0.000133   else
- 1250              0.001944     if thisline != ''
-  875              0.003614       let nextline = getline(a:lnum + 1)
-  875              0.002839       if nextline =~ '^==='
+ 3048              0.006409   let level=0
+ 3048              0.011089   let thisline = getline(a:lnum)
+ 3048              0.024038   let hashCount = len(matchstr(thisline, '^#\{1,6}'))
+ 3048              0.005030   if hashCount > 0
+  548   0.210837   0.003886     if IsFenced(a:lnum) | return 0 | endif
+  298              0.000681     let level = hashCount
+  298              0.000259   else
+ 2500              0.004283     if thisline != ''
+ 1750              0.007984       let nextline = getline(a:lnum + 1)
+ 1750              0.006352       if nextline =~ '^==='
                                     let level = 1
                                   elseif nextline =~ '^---'
                                     let level = 2
                                   endif
-  875              0.000535     endif
- 1250              0.000673   endif
- 1414              0.001603   return level
-
-FUNCTION  <SNR>78_SID()
-Called 1 time
-Total time:   0.000018
- Self time:   0.000018
-
-count  total (s)   self (s)
-    1              0.000017   return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+ 1750              0.001148     endif
+ 2500              0.001561   endif
+ 2798              0.003494   return level
 
 FUNCTION  ToggleMarkdownFoldexpr()
 Called 0 times
@@ -191,23 +172,32 @@ count  total (s)   self (s)
                                 setlocal foldexpr=StackedMarkdownFolds()
                               endif
 
+FUNCTION  IsFenced()
+Called 548 times
+Total time:   0.206951
+ Self time:   0.206951
+
+count  total (s)   self (s)
+  548              0.203606   let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
+  548              0.002592   return index(syntaxGroup, 'markdownCode') >= 0
+
 FUNCTIONS SORTED ON TOTAL TIME
 count  total (s)   self (s)  function
- 1539   1.262898   0.055057  HeadingDepth()
-  289   1.207841             IsFenced()
- 1500   0.856970   0.012528  StackedMarkdownFolds()
-   39   0.420161   0.001705  <SNR>78_FoldText()
-    1   0.000018             <SNR>78_SID()
+ 3000   0.341827   0.026745  StackedMarkdownFolds()
+ 3048   0.325696   0.118745  HeadingDepth()
+  548   0.206951             IsFenced()
+   48   0.012584   0.001970  <SNR>79_FoldText()
+    1   0.000023             <SNR>79_SID()
                              NestedMarkdownFolds()
                              ToggleMarkdownFoldexpr()
 
 FUNCTIONS SORTED ON SELF TIME
 count  total (s)   self (s)  function
-  289              1.207841  IsFenced()
- 1539   1.262898   0.055057  HeadingDepth()
- 1500   0.856970   0.012528  StackedMarkdownFolds()
-   39   0.420161   0.001705  <SNR>78_FoldText()
-    1              0.000018  <SNR>78_SID()
+  548              0.206951  IsFenced()
+ 3048   0.325696   0.118745  HeadingDepth()
+ 3000   0.341827   0.026745  StackedMarkdownFolds()
+   48   0.012584   0.001970  <SNR>79_FoldText()
+    1              0.000023  <SNR>79_SID()
                              NestedMarkdownFolds()
                              ToggleMarkdownFoldexpr()
 
