@@ -54,7 +54,11 @@ endfunction
 
 function! s:HasSyntaxGroup(lnum, targetGroup)
   let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
-  return index(syntaxGroup, a:targetGroup) >= 0
+  for value in syntaxGroup
+    if value =~ '\vmarkdown(Code|Highlight)'
+      return 1
+    endif
+  endfor
 endfunction
 
 function! s:HasSurroundingFencemarks(lnum)

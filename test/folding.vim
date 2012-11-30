@@ -229,19 +229,19 @@ describe 'LineIsFenced()'
     Expect b:current_syntax ==# 'markdown'
     Expect LineIsFenced(1)  ==# 1
     Expect LineIsFenced(2)  ==# 1
-    Expect LineIsFenced(3)  ==# 0
+    Expect LineIsFenced(3)  ==# 1
     Expect LineIsFenced(4)  ==# 0
     Expect LineIsFenced(5)  ==# 0
     Expect LineIsFenced(6)  ==# 0
     Expect LineIsFenced(7)  ==# 1
     Expect LineIsFenced(8)  ==# 1
-    Expect LineIsFenced(9)  ==# 0
+    Expect LineIsFenced(9)  ==# 1
     Expect LineIsFenced(10)  ==# 0
     Expect LineIsFenced(11)  ==# 0
     Expect LineIsFenced(12)  ==# 0
     Expect LineIsFenced(13)  ==# 1
     Expect LineIsFenced(14)  ==# 1
-    Expect LineIsFenced(15)  ==# 0
+    Expect LineIsFenced(15)  ==# 1
   end
 
 end
