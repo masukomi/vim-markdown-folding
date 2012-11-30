@@ -193,10 +193,9 @@ describe 'HeadingDepth'
 
 end
 
-describe 'IsFenced'
+describe 'LineIsFenced()'
 
   before
-    syntax on
     silent tabnew test/samples/fenced-code-blocks.md
     setlocal filetype=markdown
   end
@@ -206,23 +205,43 @@ describe 'IsFenced'
     silent tabclose!
   end
 
-  it 'returns 1 for lines inside a fenced code block'
+  it 'returns 1 for lines inside a fenced code block (with syntax disabled)'
+    syntax off
+    Expect LineIsFenced(1)  ==# 1
+    Expect LineIsFenced(2)  ==# 1
+    Expect LineIsFenced(3)  ==# 0
+    Expect LineIsFenced(4)  ==# 0
+    Expect LineIsFenced(5)  ==# 0
+    Expect LineIsFenced(6)  ==# 0
+    Expect LineIsFenced(7)  ==# 1
+    Expect LineIsFenced(8)  ==# 1
+    Expect LineIsFenced(9)  ==# 0
+    Expect LineIsFenced(10)  ==# 0
+    Expect LineIsFenced(11)  ==# 0
+    Expect LineIsFenced(12)  ==# 0
+    Expect LineIsFenced(13)  ==# 1
+    Expect LineIsFenced(14)  ==# 1
+    Expect LineIsFenced(15)  ==# 0
+  end
+
+  it 'returns 1 for lines inside a fenced code block (with syntax enabled)'
+    syntax on
     Expect b:current_syntax ==# 'markdown'
-    Expect IsFenced(1)  ==# 1
-    Expect IsFenced(2)  ==# 1
-    Expect IsFenced(3)  ==# 0
-    Expect IsFenced(4)  ==# 0
-    Expect IsFenced(5)  ==# 0
-    Expect IsFenced(6)  ==# 0
-    Expect IsFenced(7)  ==# 1
-    Expect IsFenced(8)  ==# 1
-    Expect IsFenced(9)  ==# 0
-    Expect IsFenced(10)  ==# 0
-    Expect IsFenced(11)  ==# 0
-    Expect IsFenced(12)  ==# 0
-    Expect IsFenced(13)  ==# 1
-    Expect IsFenced(14)  ==# 1
-    Expect IsFenced(15)  ==# 0
+    Expect LineIsFenced(1)  ==# 1
+    Expect LineIsFenced(2)  ==# 1
+    Expect LineIsFenced(3)  ==# 0
+    Expect LineIsFenced(4)  ==# 0
+    Expect LineIsFenced(5)  ==# 0
+    Expect LineIsFenced(6)  ==# 0
+    Expect LineIsFenced(7)  ==# 1
+    Expect LineIsFenced(8)  ==# 1
+    Expect LineIsFenced(9)  ==# 0
+    Expect LineIsFenced(10)  ==# 0
+    Expect LineIsFenced(11)  ==# 0
+    Expect LineIsFenced(12)  ==# 0
+    Expect LineIsFenced(13)  ==# 1
+    Expect LineIsFenced(14)  ==# 1
+    Expect LineIsFenced(15)  ==# 0
   end
 
 end

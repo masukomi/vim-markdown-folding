@@ -26,7 +26,7 @@ function! HeadingDepth(lnum)
   let thisline = getline(a:lnum)
   let hashCount = len(matchstr(thisline, '^#\{1,6}'))
   if hashCount > 0
-    if IsFenced(a:lnum) | return 0 | endif
+    if LineIsFenced(a:lnum) | return 0 | endif
     let level = hashCount
   else
     if thisline != ''
@@ -41,9 +41,30 @@ function! HeadingDepth(lnum)
   return level
 endfunction
 
-function! IsFenced(lnum)
+function! LineIsFenced(lnum)
+  if exists("b:current_syntax") && b:current_syntax ==# 'markdown'
+    " It's cheap to check if the current line has 'markdownCode' syntax group
+    return s:HasSyntaxGroup(a:lnum, 'markdownCode')
+  else
+    " Using searchpairpos() is expensive, so only do it if syntax highlighting
+    " is not enabled
+    return s:HasSurroundingFencemarks(a:lnum)
+  endif
+endfunction
+
+function! s:HasSyntaxGroup(lnum, targetGroup)
   let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
-  return index(syntaxGroup, 'markdownCode') >= 0
+  return index(syntaxGroup, a:targetGroup) >= 0
+endfunction
+
+function! s:HasSurroundingFencemarks(lnum)
+  let cursorPosition = [line("."), col(".")]
+  call cursor(a:lnum, 1)
+  let startFence = '\%^```\|^\n\zs```'
+  let endFence = '```\n^$'
+  let fenceEndPosition = searchpairpos(startFence,'',endFence,'W')
+  call cursor(cursorPosition)
+  return fenceEndPosition != [0,0]
 endfunction
 
 function! s:FoldText()
