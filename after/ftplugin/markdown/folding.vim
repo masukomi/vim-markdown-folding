@@ -26,7 +26,6 @@ function! HeadingDepth(lnum)
   let thisline = getline(a:lnum)
   let hashCount = len(matchstr(thisline, '^#\{1,6}'))
   if hashCount > 0
-    if LineIsFenced(a:lnum) | return 0 | endif
     let level = hashCount
   else
     if thisline != ''
@@ -37,6 +36,10 @@ function! HeadingDepth(lnum)
         let level = 2
       endif
     endif
+  endif
+  if level > 0 && LineIsFenced(a:lnum)
+    " Ignore # or === if they appear within fenced code blocks
+    let level = 0
   endif
   return level
 endfunction
