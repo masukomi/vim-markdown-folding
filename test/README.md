@@ -23,6 +23,3 @@ Execute the tests from inside Vim with this quick-and-dirty mapping (assumes wor
     nnoremap <leader>r :wa <bar> ! ../vspec/bin/vspec ../vspec/ . test/folding.vim<CR>
 
 [vspec]: https://github.com/kana/vim-vspec
-[vim-markdown]: https://github.com/tpope/vim-markdown
-[pathogen]: https://github.com/tpope/vim-pathogen
-[Vundle]: https://github.com/gmarik/vundle
