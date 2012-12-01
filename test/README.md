@@ -12,11 +12,15 @@ Thanks to Kana Natsuno for helping me to test drive this code using [vspec][].
         markdown-folding/
           test/
             folding.vim
+        vim-markdown/
+          ftdetect/
+          ftplugin/
+          syntax/
 
 You can run the tests as follows:
 
     cd .vim/bundle/markdown-folding
-    ../vspec/bin/vspec ../vspec . test/folding.vim
+    ../vspec/bin/vspec ../vspec ../vim-markdown . test/folding.vim
 
 Execute the tests from inside Vim with this quick-and-dirty mapping (assumes working directory to be `.vim/bundle/markdown-folding`):
 
