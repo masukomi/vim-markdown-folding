@@ -482,3 +482,24 @@ describe 'Fenced code blocks'
   end
 
 end
+
+describe 'Jekyll front matter'
+
+  before
+    syntax on
+    silent tabnew test/samples/jekyll-meta.md
+    setlocal filetype=markdown
+  end
+
+  after
+    silent tabclose
+    syntax off
+  end
+
+  it 'do not create new folds, even when a line starts with #'
+    setlocal foldlevel=0
+    Expect FoldBoundariesInRange(1,7) toHaveBoundaries [-1,-1]
+    Expect FoldBoundariesInRange(8,10) toHaveBoundaries [8,10]
+  end
+
+end
