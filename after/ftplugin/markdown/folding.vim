@@ -30,9 +30,9 @@ function! HeadingDepth(lnum)
   else
     if thisline != ''
       let nextline = getline(a:lnum + 1)
-      if nextline =~ '^==='
+      if nextline =~ '^=\+\s*$'
         let level = 1
-      elseif nextline =~ '^---'
+      elseif nextline =~ '^-\+\s*$'
         let level = 2
       endif
     endif
