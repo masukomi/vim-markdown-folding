@@ -157,7 +157,7 @@ describe 'HeadingDepth'
   it 'returns 1 for === underscored headings'
     call PopulateBuffer([
           \ 'Level one heading',
-          \ '=================',
+          \ '=',
           \ ])
     Expect HeadingDepth(1)  ==# 1
     Expect HeadingDepth(2)  ==# 0
@@ -166,7 +166,7 @@ describe 'HeadingDepth'
   it 'returns 2 for --- underscored headings'
     call PopulateBuffer([
           \ 'Level two heading',
-          \ '-----------------',
+          \ '-',
           \ ])
     Expect HeadingDepth(1)  ==# 2
     Expect HeadingDepth(2)  ==# 0
