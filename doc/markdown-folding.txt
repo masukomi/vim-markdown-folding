@@ -73,4 +73,9 @@ The fold style is scoped to each window, which means it's possible to use the
 stacked folding style in one split window, and the nested folding style in
 another.
 
+                                           *g:markdown_fold_override_foldtext*
+If set to 0, the fold text will not be overriden:>
+    let g:markdown_fold_override_foldtext = 0
+<
+
  vim:tw=78:ts=8:ft=help:norl:

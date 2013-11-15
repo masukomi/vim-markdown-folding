@@ -98,8 +98,16 @@ if !exists('g:markdown_fold_style')
   let g:markdown_fold_style = 'stacked'
 endif
 
+if !exists('g:markdown_fold_override_foldtext')
+  let g:markdown_fold_override_foldtext = 1
+endif
+
 setlocal foldmethod=expr
-let &l:foldtext = s:SID() . 'FoldText()'
+
+if g:markdown_fold_override_foldtext
+  let &l:foldtext = s:SID() . 'FoldText()'
+endif
+
 let &l:foldexpr =
   \ g:markdown_fold_style ==# 'nested'
   \ ? 'NestedMarkdownFolds()'
