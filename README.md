@@ -14,3 +14,8 @@ The `markdown-folding` plugin provides nothing more than a `foldexpr` for markdo
 [vim-markdown]: https://github.com/tpope/vim-markdown
 [pathogen]: https://github.com/tpope/vim-pathogen
 [Vundle]: https://github.com/gmarik/vundle
+
+## License
+
+Copyright (c) Drew Neil.  Distributed under the same terms as Vim itself.
+See `:help license`.

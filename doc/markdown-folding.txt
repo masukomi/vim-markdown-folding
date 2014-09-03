@@ -1,5 +1,8 @@
 *markdown-folding.txt*	For Vim version 7.3	Last change: 2012 Oct 26
 
+Author: Drew Neil <http://drewneil.com/>
+License: Same terms as Vim itself (see |license|)
+
 CONTENTS						    *markdown-folding*
 
 Introduction			|markdown-folding-introduction|
