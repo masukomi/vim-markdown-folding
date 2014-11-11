@@ -23,6 +23,13 @@ endfunction
 
 function! HeadingDepth(lnum)
   let level=0
+
+  " heading must be preceded by a blank line unless
+  " it is at start of file
+  if a:lnum != 1 && getline(a:lnum - 1) !~ '^\s*$'
+    return level
+  endif
+
   let thisline = getline(a:lnum)
   let hashCount = len(matchstr(thisline, '^#\{1,6}'))
   if hashCount > 0
