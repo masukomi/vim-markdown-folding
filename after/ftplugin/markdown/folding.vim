@@ -1,5 +1,13 @@
 " Fold expressions {{{1
 function! StackedMarkdownFolds()
+  let thisline = getline(v:lnum)
+  let prevline = getline(v:lnum - 1)
+  let nextline = getline(v:lnum + 1)
+  if thisline =~ '^```.*$' && prevline =~ '^\s*$'  " start of a fenced block
+    return ">2"
+  elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
+    return "<2"
+  endif
   if HeadingDepth(v:lnum) > 0
     return ">1"
   else
@@ -8,6 +16,14 @@ function! StackedMarkdownFolds()
 endfunction
 
 function! NestedMarkdownFolds()
+  let thisline = getline(v:lnum)
+  let prevline = getline(v:lnum - 1)
+  let nextline = getline(v:lnum + 1)
+  if thisline =~ '^```.*$' && prevline =~ '^\s*$'  " start of a fenced block
+    return "a1"
+  elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
+    return "s1"
+  endif
   let depth = HeadingDepth(v:lnum)
   if depth > 0
     return ">".depth
