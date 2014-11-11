@@ -70,7 +70,7 @@ endfunction
 function! LineIsFenced(lnum)
   if exists("b:current_syntax") && b:current_syntax ==# 'markdown'
     " It's cheap to check if the current line has 'markdownCode' syntax group
-    return s:HasSyntaxGroup(a:lnum, 'markdownCode')
+    return HasSyntaxGroup(a:lnum, '\vmarkdown(Code|Highlight)')
   else
     " Using searchpairpos() is expensive, so only do it if syntax highlighting
     " is not enabled
@@ -78,11 +78,11 @@ function! LineIsFenced(lnum)
   endif
 endfunction
 
-function! s:HasSyntaxGroup(lnum, targetGroup)
+function! HasSyntaxGroup(lnum, targetGroup)
   let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
   for value in syntaxGroup
-    if value =~ '\vmarkdown(Code|Highlight)'
-      return 1
+    if value =~ a:targetGroup
+        return 1
     endif
   endfor
 endfunction
