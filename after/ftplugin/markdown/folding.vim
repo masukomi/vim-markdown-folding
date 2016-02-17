@@ -10,7 +10,7 @@ endfunction
 function! NestedMarkdownFolds()
   let depth = HeadingDepth(v:lnum)
   if depth > 0
-    return ">".depth
+    return ">".(depth - g:markdown_ignore_first)
   else
     return "="
   endif
@@ -100,6 +100,10 @@ endif
 
 if !exists('g:markdown_fold_override_foldtext')
   let g:markdown_fold_override_foldtext = 1
+endif
+
+if !exists('g:markdown_ignore_first')
+  let g:markdown_ignore_first = 0
 endif
 
 setlocal foldmethod=expr

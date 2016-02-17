@@ -81,4 +81,8 @@ If set to 0, the fold text will not be overriden:>
     let g:markdown_fold_override_foldtext = 0
 <
 
+                                            *g:markdown_fold_override_foldtext*
+If set to 1, the first level headings will be ignored with nested folding:>
+let g:markdown_ignore_first = 0
+<
  vim:tw=78:ts=8:ft=help:norl:
