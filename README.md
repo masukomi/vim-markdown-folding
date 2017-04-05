@@ -17,5 +17,5 @@ The `markdown-folding` plugin provides nothing more than a `foldexpr` for markdo
 
 ## License
 
-Copyright (c) Drew Neil.  Distributed under the same terms as Vim itself.
+Copyright (c) Drew Neil. Distributed under the same terms as Vim itself.
 See `:help license`.
