@@ -24,9 +24,11 @@ endfunction
 function! HeadingDepth(lnum)
   let level=0
   let thisline = getline(a:lnum)
-  let hashCount = len(matchstr(thisline, '^#\{1,6}\s'))
-  if hashCount > 1
-    let level = hashCount - 1
+  if thisline =~ '^#\+\s\+'
+    let hashCount = len(matchstr(thisline, '^#\{1,6}\s'))
+    if hashCount > 0
+      let level = hashCount
+    endif
   else
     if thisline != ''
       let nextline = getline(a:lnum + 1)
@@ -47,7 +49,7 @@ endfunction
 function! LineIsFenced(lnum)
   if exists("b:current_syntax") && b:current_syntax ==# 'markdown'
     " It's cheap to check if the current line has 'markdownCode' syntax group
-    return s:HasSyntaxGroup(a:lnum, 'markdownCode')
+    return s:HasSyntaxGroup(a:lnum)
   else
     " Using searchpairpos() is expensive, so only do it if syntax highlighting
     " is not enabled
@@ -55,10 +57,11 @@ function! LineIsFenced(lnum)
   endif
 endfunction
 
-function! s:HasSyntaxGroup(lnum, targetGroup)
+function! s:HasSyntaxGroup(lnum)
   let syntaxGroup = map(synstack(a:lnum, 1), 'synIDattr(v:val, "name")')
   for value in syntaxGroup
-    if value =~ '\vmarkdown(Code|Highlight)'
+    "if value =~ '\vmarkdown(Code|Highlight)'
+    if value =~ 'markdown(Code|Highlight).*'
       return 1
     endif
   endfor
