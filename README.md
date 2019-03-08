@@ -27,6 +27,15 @@ The `markdown-folding` plugin provides nothing more than a `foldexpr` for markdo
 [pathogen]: https://github.com/tpope/vim-pathogen
 [Vundle]: https://github.com/gmarik/vundle
 
+## Troubleshooting
+There are a variety of ways Vim can be instructed to "fold" things. When you add
+a plugin to support a new language / format the plugin will tell Vim "Hey here's
+the method to use for figuring out the start and end of a fold with this language". This plugin uses a `foldmethod` of
+`expr`. If it's not working run `:set foldmethod?` You should see
+`foldmethod=expr`. If you see something else then you've likely got some other
+Vim configuration overriding the setting in the plugin.
+
+
 ## License
 
 Created by Drew Neil. Copyright Drew Niel and all the contributors.
