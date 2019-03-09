@@ -28,12 +28,21 @@ The `markdown-folding` plugin provides nothing more than a `foldexpr` for markdo
 [Vundle]: https://github.com/gmarik/vundle
 
 ## Troubleshooting
+
+First, Vim must recognize the file you are in as a Markdown file. `set filetype?`
+should return `filetype=markdown`. If it doesn't you may want to tweak your
+`filetype.vim` to make sure it knows to associate your current file extension
+with Markdown. In the short term you can `:set filetype=markdown`
+
 There are a variety of ways Vim can be instructed to "fold" things. When you add
 a plugin to support a new language / format the plugin will tell Vim "Hey here's
-the method to use for figuring out the start and end of a fold with this language". This plugin uses a `foldmethod` of
-`expr`. If it's not working run `:set foldmethod?` You should see
+the method to use for figuring out the start and end of a fold with this language". 
+This plugin uses a `foldmethod` of
+`expr`. Running `:set foldmethod?` should return 
 `foldmethod=expr`. If you see something else then you've likely got some other
-Vim configuration overriding the setting in the plugin.
+Vim configuration overriding the setting in the plugin. If, after running 
+`:set foldmethod=expr`, things still aren't working, then something is most likely
+amiss in your `~/.vimrc` (or `~/.config/nvim/init.vim` if you use NeoVim).
 
 
 ## License
