@@ -38,7 +38,7 @@ Vim configuration overriding the setting in the plugin.
 
 ## License
 
-Created by Drew Neil. Copyright Drew Niel and all the contributors.
+Created by [Drew Neil](https://github.com/nelstrom). Copyright Drew Niel and all the contributors.
 Distributed under the same terms as Vim itself. See `:help license`.
 
 With community improvements by: 
