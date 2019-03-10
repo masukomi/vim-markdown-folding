@@ -9,6 +9,32 @@ This plugin adds the ability to fold the following markdown elements:
 
 ![example screenshot of folding functionality](https://github.com/masukomi/vim-markdown-folding/raw/master/doc/example_screenshot.jpg)
 
+## Usage
+By default this plugin will use "Stacked" folding which looks like this when
+everything is folded. 
+
+```
+  1 ##    Topmost heading                         [3 lines]---------------------------
+  5 ###   Second level heading                    [3 lines]---------------------------
+  9 ####  Third level heading                     [3 lines]---------------------------
+ 13 ####  Another third level heading             [2 lines]---------------------------
+```
+
+You can use "Nested" folding, where folding the "Topmost heading"
+will also nest all the deeper sections under it.
+
+```
+  1 ##    Topmost heading                         [14 lines]--------------------------
+```
+
+To toggle between the two folding styles use `:FoldToggle`
+
+If you'd like to have it default to "Nested" folding add this to your `~/.vim/filetype.vim`
+
+```vim
+autocmd FileType markdown set foldexpr=NestedMarkdownFolds()
+```
+
 
 ## Installation
 
