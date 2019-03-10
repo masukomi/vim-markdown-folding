@@ -1,5 +1,5 @@
 doc/tags
-.vim-flavor/
+.vim-flavor
 VimFlavor.lock
 .*.swp
 .swp
