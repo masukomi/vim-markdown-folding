@@ -54,7 +54,7 @@ call vspec#customize_matcher('toBeOpen', function('OpenFoldBoundaries'))
 describe 'setting filetype=markdown'
 
   before
-    silent tabnew test/samples/blank.md
+    silent tabnew t/samples/blank.md
     setlocal filetype=markdown
   end
 
@@ -83,7 +83,7 @@ end
 describe 'setting filetype!=markdown'
 
   before
-    silent tabnew test/samples/blank.md
+    silent tabnew t/samples/blank.md
     setlocal filetype=markdown
   end
 
@@ -196,7 +196,7 @@ end
 describe 'LineIsFenced()'
 
   before
-    silent tabnew test/samples/fenced-code-blocks.md
+    silent tabnew t/samples/fenced-code-blocks.md
     setlocal filetype=markdown
   end
 
@@ -249,7 +249,7 @@ end
 describe 'Stacked Folding'
 
   before
-    silent tabnew test/samples/lorem.md
+    silent tabnew t/samples/lorem.md
     setlocal filetype=markdown
   end
 
@@ -297,7 +297,7 @@ end
 describe 'Nested Folding'
 
   before
-    silent tabnew test/samples/lorem.md
+    silent tabnew t/samples/lorem.md
     setlocal filetype=markdown
     setlocal foldexpr=NestedMarkdownFolds()
     setlocal foldlevel=0
@@ -353,31 +353,31 @@ describe 'FoldText'
     silent tabclose!
   end
 
-  it 'uses "# level one" headings as is'
+  it 'indents "# level one" headings'
     call PopulateBuffer([
           \ '# Level one heading',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') =~# '^# Level one heading'
+    Expect foldtextresult('1') =~# '^#     Level one heading'
   end
 
-  it 'uses "## level two" headings as is'
+  it 'indents "## level two" heading'
     call PopulateBuffer([
           \ '## Level two heading',
           \ '',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') =~# '^## Level two heading'
+    Expect foldtextresult('1') =~# '^##    Level two heading'
   end
 
-  it 'uses "### level three" headings as is'
+  it 'indents "### level three" headings'
     call PopulateBuffer([
           \ '### Level three heading',
           \ '',
           \ 'Lorem ipsum dolor sit amet,',
           \ 'consectetur adipiscing elit.',
           \ ])
-    Expect foldtextresult('1') =~# '^### Level three heading'
+    Expect foldtextresult('1') =~# '^###   Level three heading'
   end
 
   it 'reformats "===" headings to look like "# Level one"'
@@ -387,7 +387,7 @@ describe 'FoldText'
           \ '',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') =~# '^# Level one heading'
+    Expect foldtextresult('1') =~# '^#     Level one heading'
   end
 
   it 'reformats "---" headings to look like "## Level two"'
@@ -397,7 +397,7 @@ describe 'FoldText'
           \ '',
           \ 'Lorem ipsum dolor sit amet...',
           \ ])
-    Expect foldtextresult('1') =~# '^## Level two heading'
+    Expect foldtextresult('1') =~# '^##    Level two heading'
   end
 
   it 'shows [1 line] for short folds'
@@ -466,7 +466,7 @@ describe 'Fenced code blocks'
 
   before
     syntax on
-    silent tabnew test/samples/cpp-readme.md
+    silent tabnew t/samples/cpp-readme.md
     setlocal filetype=markdown
   end
 

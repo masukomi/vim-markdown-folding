@@ -8,6 +8,7 @@ function! StackedMarkdownFolds()
   elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
     return "<2"
   endif
+  
   if HeadingDepth(v:lnum) > 0
     return ">1"
   else
@@ -24,6 +25,7 @@ function! NestedMarkdownFolds()
   elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
     return "s1"
   endif
+
   let depth = HeadingDepth(v:lnum)
   if depth > 0
     return ">".depth
@@ -41,7 +43,7 @@ function! HeadingDepth(lnum)
   let level=0
   let thisline = getline(a:lnum)
   if thisline =~ '^#\+\s\+'
-    let hashCount = len(matchstr(thisline, '^#\{1,6}\s'))
+    let hashCount = len(matchstr(thisline, '^#\{1,6}'))
     if hashCount > 0
       let level = hashCount
     endif
