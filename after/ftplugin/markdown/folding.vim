@@ -8,7 +8,13 @@ function! StackedMarkdownFolds()
   elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
     return "<2"
   endif
-  
+
+  if thisline =~ '^<!--.*$' && prevline =~ '^\s*$'  " start of an HTML commented block
+    return ">2"
+  elseif thisline =~ '^-->$' && nextline =~ '^\s*$'  " end of an HTML commented block
+    return "<2"
+  endif
+
   if HeadingDepth(v:lnum) > 0
     return ">1"
   else
@@ -23,6 +29,12 @@ function! NestedMarkdownFolds()
   if thisline =~ '^```.*$' && prevline =~ '^\s*$'  " start of a fenced block
     return "a1"
   elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
+    return "s1"
+  endif
+
+  if thisline =~ '^<!--.*$' && prevline =~ '^\s*$'  " start of an HTML commented block
+    return "a1"
+  elseif thisline =~ '^-->$' && nextline =~ '^\s*$'  " end of an HTML commented block
     return "s1"
   endif
 
