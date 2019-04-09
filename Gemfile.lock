@@ -1,17 +1,25 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    equatable (0.5.0)
     parslet (1.8.2)
+    pastel (0.7.2)
+      equatable (~> 0.5.0)
+      tty-color (~> 0.4.0)
+    rake (12.3.2)
     thor (0.20.3)
-    vim-flavor (2.2.2)
-      parslet (~> 1.7)
-      thor (~> 0.19)
+    tty-color (0.4.3)
+    vim-flavor (3.0.0)
+      parslet (~> 1.8)
+      pastel (~> 0.7)
+      thor (~> 0.20)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  vim-flavor (~> 2.1)
+  rake
+  vim-flavor (~> 3.0)
 
 BUNDLED WITH
-   1.16.6
+   1.17.2
