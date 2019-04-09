@@ -71,6 +71,40 @@ Vim configuration overriding the setting in the plugin. If, after running
 amiss in your `~/.vimrc` (or `~/.config/nvim/init.vim` if you use NeoVim).
 
 
+## Contributing
+PRs are always a welcome thing, but it should be noted that the current intent is to keep this plugin pretty focused on folding Markdown. 
+
+All new PRs should include tests. If you're fixing a bug please add a test to make sure it never comes back. If you're adding a new feature please add tests to make sure we never break it with future changes. 
+
+The tests are currently all contained in `t/folding.vim` 
+
+### Running Tests
+The test setup requires Ruby. For those unfamiliar with Ruby development you'll want to cd into the `vim-markdown-folding` directory and run the following commands in the terminal.
+
+Install bundler if you don't have it already.
+
+`gem install bundler`
+
+Tell bundler to install the required dependencies
+
+`bundle install`
+
+Tell bundler to run the tests
+
+`bundle exec rake test`
+
+The end of the output should look something like this
+
+```
+t/folding.vim .. ok
+All tests successful.
+Files=1, Tests=41,  1 wallclock secs ( 0.03 usr  0.01 sys +  0.57 cusr  0.12 csys =  0.73 CPU)
+Result: PASS
+```
+
+
+
+
 ## License
 
 Created by [Drew Neil](https://github.com/nelstrom). Copyright Drew Niel and all the contributors.
