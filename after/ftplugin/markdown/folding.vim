@@ -36,7 +36,7 @@ endfunction
 
 " Helpers {{{1
 function! s:SID()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+  return matchstr(expand('<sfile>'), '\zs<SNR>\d\+_\zeSID$')
 endfunction
 
 function! HeadingDepth(lnum)
