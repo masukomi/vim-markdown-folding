@@ -1,3 +1,6 @@
+[ Looking for new maintainer see note at end. ]
+
+
 This plugin enables folding by section headings in markdown documents.
 
 ## Features
@@ -118,3 +121,6 @@ With community improvements by:
 * [thawk](https://github.com/thawk/)
 
 Maintained by [masukomi](https://github.com/masukomi/)
+
+## Looking for New Maintainer
+This works fine, but there are improvements that can be made, and PRs that need addressing. If you've familiar with vim-script and have some vim-script stuff you can point at, gimme a holler @masukomi@connectified.com on mastodon or @masukomi on twitter. I use [Doom Emacs](https://github.com/doomemacs/doomemacs) these days so vim-script isn't where my head is. 
