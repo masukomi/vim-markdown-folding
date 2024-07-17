@@ -3,12 +3,12 @@ function! StackedMarkdownFolds()
   let thisline = getline(v:lnum)
   let prevline = getline(v:lnum - 1)
   let nextline = getline(v:lnum + 1)
-  if thisline =~ '^```.*$' && prevline =~ '^\s*$'  " start of a fenced block
+  if thisline =~ '^\%(```\|<!--\).*$' && prevline =~ '^\s*$'  " start of a fenced block or HTML commented block
     return ">2"
-  elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
+  elseif thisline =~ '^\%(```\|-->\)$' && nextline =~ '^\s*$'  " end of a fenced block or HTML commented block
     return "<2"
   endif
-  
+
   if HeadingDepth(v:lnum) > 0
     return ">1"
   else
@@ -20,9 +20,9 @@ function! NestedMarkdownFolds()
   let thisline = getline(v:lnum)
   let prevline = getline(v:lnum - 1)
   let nextline = getline(v:lnum + 1)
-  if thisline =~ '^```.*$' && prevline =~ '^\s*$'  " start of a fenced block
+  if thisline =~ '^\%(```\|<!--\).*$' && prevline =~ '^\s*$'  " start of a fenced block or HTML commented block
     return "a1"
-  elseif thisline =~ '^```$' && nextline =~ '^\s*$'  " end of a fenced block
+  elseif thisline =~ '^\%(```\|-->\)$' && nextline =~ '^\s*$'  " end of a fenced block or HTML commented block
     return "s1"
   endif
 
